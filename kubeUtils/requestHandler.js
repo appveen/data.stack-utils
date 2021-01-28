@@ -7,9 +7,9 @@ const fs = require("fs");
 
 const URL = "https://kubernetes.default.svc";
 
-var odp_token = "";
-let odp_sa_path = "/var/run/secrets/kubernetes.io/serviceaccount/token";
-if(fs.existsSync(odp_sa_path)) odp_token = fs.readFileSync(odp_sa_path);
+var dataStack_token = "";
+let dataStack_sa_path = "/var/run/secrets/kubernetes.io/serviceaccount/token";
+if(fs.existsSync(dataStack_sa_path)) dataStack_token = fs.readFileSync(dataStack_sa_path);
 
 e.get = (_api) => {
 	var options = {
@@ -19,7 +19,7 @@ e.get = (_api) => {
 		strictSSL: false,
 		headers: {
 			'Content-Type': 'application/json',
-			"Authorization": "Bearer " + odp_token
+			"Authorization": "Bearer " + dataStack_token
 		},
 	}
 	return new Promise((resolve, reject) => {
@@ -41,7 +41,7 @@ e.post = (_api, _body) => {
 		strictSSL: false,
 		headers: {
 			'Content-Type': 'application/json',
-			"Authorization": "Bearer " + odp_token
+			"Authorization": "Bearer " + dataStack_token
 		},
 		json: true,
 		body: _body,
@@ -64,7 +64,7 @@ e.patch = (_api, _body) => {
 		url: URL + _api,
 		strictSSL: false,
 		headers: {
-			"Authorization": "Bearer " + odp_token,
+			"Authorization": "Bearer " + dataStack_token,
 			"Content-Type": "application/merge-patch+json"
 		},
 		json: true,
@@ -89,7 +89,7 @@ e.delete = (_api, _body) => {
 		strictSSL: false,
 		headers: {
 			'Content-Type': 'application/json',
-			"Authorization": "Bearer " + odp_token
+			"Authorization": "Bearer " + dataStack_token
 		},
 		json: true,
 		body: _body
@@ -113,7 +113,7 @@ e.put = (_api, _body) => {
 		strictSSL: false,
 		headers: {
 			'Content-Type': 'application/json',
-			"Authorization": "Bearer " + odp_token
+			"Authorization": "Bearer " + dataStack_token
 		},
 		json: true,
 		body: _body

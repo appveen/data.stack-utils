@@ -1,4 +1,4 @@
-var helperUtil = require('@appveen/odp-utils/eventsUtil/constants');
+var helperUtil = require('../eventsUtil/constants');
 var eventPriorityMap = helperUtil.eventPriorityMap;
 var client = null;
 
@@ -42,7 +42,7 @@ function publishEvent(eventId, source, req, doc, partner) {
             client.publish('events', JSON.stringify(payload));
             logger.info('Event published');
         } else {
-            logger.error('client not found to publish events');
+            logger.error('Client not initialised to publish events');
         }
     } catch (e) {
         logger.error('publishEvent', e);

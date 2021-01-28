@@ -1,5 +1,5 @@
-# odp-utils
-Common utils for ODP
+# data.stack-utils
+Common utils for appveen data.stack
 
 ## Audit Trail
 This lib contain hooks to create audit logs in a specific DB. This DB will store all the logs of data change.

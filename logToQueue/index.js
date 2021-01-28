@@ -1,3 +1,11 @@
+let log4js = require('log4js');
+
+log4js.configure({
+    appenders: { out: { type: 'stdout', layout: { type: 'basic' } } },
+    categories: { default: { appenders: ['out'], level: 'INFO' } }
+  });
+let logger = log4js.getLogger('[data.stack-logToQueue]');
+
 const pathNotToLog = ["/rbac/health", "/sm/health", "/dm/health", "/wf/health", "/mon/health", "/sec/health", "/ne/health"];
 const reqHeaderNotToLog = ['x-forwarded-for', 'dnt', 'authorization', 'access-control-allow-methods', 'content-type', 'access-control-allow-origin', 'accept', 'referer', 'accept-encoding', 'accept-language', 'cookie', 'connection'];
 const resHeaderNotToLog = ['x-powered-by', 'access-control-allow-origin', 'content-type', 'content-length', 'etag'];
@@ -53,7 +61,6 @@ The masking array structure:
 */
 function logToQueue(name, client, queueName, collectionName, masking, serviceId) {
     return function (req, res, next) {
-        let logger = global.logger;
         let logReqBody = JSON.parse(JSON.stringify(req.body));
         if (masking && Array.isArray(masking)) {
             let maskingObj = masking.find(_m => compareUrl(_m.url, req.path) && (_m.method ? _m.method.toLowerCase() == req.method.toLowerCase() : true));
@@ -61,7 +68,7 @@ function logToQueue(name, client, queueName, collectionName, masking, serviceId)
                 logReqBody = getMaskedObj(logReqBody, maskingObj.path)
             }
         }
-        if (req.method != "GET") logger.debug('Request Payload :: ', JSON.stringify(logReqBody));
+        if (req.method != "GET") logger.trace(`[${req.headers.TxnId}] Request Payload :: ${JSON.stringify(logReqBody)}`);
         let start = new Date();
         var oldWrite = res.write,
             oldEnd = res.end;
@@ -179,9 +186,9 @@ function messages(req, res) {
     let resBody = null;
     let urlName = [];
 
-    logger.debug(`ODP-UTILS :: req.originalUrl :: ${req.originalUrl}`)
-    logger.debug(`ODP-UTILS :: req.method :: ${req.method}`)
-    logger.debug(`ODP-UTILS :: res.statusCode :: ${res.statusCode}`)
+    logger.trace(`[${req.headers.TxnId}] req.originalUrl :: ${req.originalUrl}`)
+    logger.trace(`[${req.headers.TxnId}] req.method :: ${req.method}`)
+    logger.trace(`[${req.headers.TxnId}] res.statusCode :: ${res.statusCode}`)
     if (req.originalUrl == '/rbac/usr' && res.statusCode == 200 && req.method == "POST") {
         resBody = req.resBody;
         message = req.headers.user + ' added a new user ' + resBody._id;
@@ -196,7 +203,7 @@ function messages(req, res) {
 
     else if (req.originalUrl.startsWith('/rbac/usr/') && res.statusCode == 200 && req.method == "PUT") {
         urlName = req.originalUrl.split('/');
-        logger.debug(`ODP-UTILS :: req.method :: ${req.method}`)
+        logger.trace(`[${req.headers.TxnId}] req.method :: ${req.method}`)
 
         if (urlName.length == 5 && urlName[4] == 'reset') {
             message = req.headers.user + ' reset password for user ' + urlName[3];

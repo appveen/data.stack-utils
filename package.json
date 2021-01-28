@@ -1,26 +1,28 @@
 {
-  "name": "@appveen/odp-utils",
-  "version": "1.5.6",
-  "description": "General utility function",
+  "name": "data.stack-utils",
+  "version": "1.0.0",
+  "description": "General utility functions for appveen data.stack",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/appveen/odp-utils.git"
+    "url": "git+https://github.com/appveen/data.stack-utils.git"
   },
-  "author": "Shobhit Agarwal <shobhit@appveen.com>",
+  "keywords": [],
+  "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/appveen/odp-utils/issues"
+    "url": "https://github.com/appveen/data.stack-utils/issues"
   },
-  "homepage": "https://github.com/appveen/odp-utils#readme",
+  "homepage": "https://github.com/appveen/data.stack-utils#readme",
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "lodash": "^4.17.4",
-    "node-nats-streaming": "0.0.51",
-    "log4js": "^4.0.0",
-    "request": "^2.88.0"
+    "bluebird": "^3.7.2",
+    "lodash": "^4.17.20",
+    "log4js": "^6.3.0",
+    "mongoose": "^5.11.13",
+    "node-nats-streaming": "^0.3.2",
+    "request": "^2.88.2"
   }
 }
