@@ -2,11 +2,12 @@ let NATS = require('node-nats-streaming');
 let client = null;
 let log4js = require('log4js');
 
-let version = require('./package.json').version;
 log4js.configure({
     appenders: { out: { type: 'stdout', layout: { type: 'basic' } } },
     categories: { default: { appenders: ['out'], level: 'INFO' } }
   });
+
+let version = require('../package.json').version;
 let logger = log4js.getLogger(`[data.stack-streaming ${version}]`);
 
 let init = (clusterName, clientId, config) => {
