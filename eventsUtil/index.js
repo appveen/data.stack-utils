@@ -25,6 +25,8 @@ function setNatsClient(natsClient) {
  * @param {*} [partner] The Partner Document Object. (Only if origin is flow)
  */
 function publishEvent(eventId, source, req, doc, partner) {
+	let txnId = ""
+	if (req) txnId = `[${req.headers.TxnId}] `
     try {
         let payload = {
             "eventId": eventId,
@@ -49,13 +51,13 @@ function publishEvent(eventId, source, req, doc, partner) {
         }
         if (client) {
             client.publish('events', JSON.stringify(payload));
-            logger.debug(`[${req.headers.TxnId}] Event published`);
-            logger.debug(`[${req.headers.TxnId}] Event payload - JSON.stringify(payload)`);
+            logger.debug(`${txnId}Event published`);
+            logger.debug(`${txnId}Event payload - JSON.stringify(payload)`);
         } else {
-            logger.error(`[${req.headers.TxnId}] Client not initialised to publish events`);
+            logger.error(`${txnId}Client not initialised to publish events`);
         }
     } catch (e) {
-        logger.error(`[${req.headers.TxnId}] Publish event : ${e.message}`);
+        logger.error(`${txnId}Publish event : ${e.message}`);
     }
 }
 
