@@ -46,12 +46,13 @@ function publishEvent(eventId, source, req, doc, partner) {
         }
         if (client) {
             client.publish('events', JSON.stringify(payload));
-            logger.debug('Event published');
+            logger.debug(`[${req.headers.TxnId}] Event published`);
+            logger.debug(`[${req.headers.TxnId}] Event payload - JSON.stringify(payload)`);
         } else {
-            logger.error('Client not initialised to publish events');
+            logger.error(`[${req.headers.TxnId}] Client not initialised to publish events`);
         }
     } catch (e) {
-        logger.error('Publish event', e);
+        logger.error(`[${req.headers.TxnId}] Publish event : ${e.message}`);
     }
 }
 
