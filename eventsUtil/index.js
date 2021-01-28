@@ -2,10 +2,17 @@ var helperUtil = require('../eventsUtil/constants');
 var eventPriorityMap = helperUtil.eventPriorityMap;
 var client = null;
 
+let log4js = require('log4js');
+
+log4js.configure({
+    appenders: { out: { type: 'stdout', layout: { type: 'basic' } } },
+    categories: { default: { appenders: ['out'], level: 'INFO' } }
+  });
+let logger = log4js.getLogger('[data.stack-eventsUtil]');
+
 function setNatsClient(natsClient) {
     client = natsClient;
 }
-
 /**
  * 
  * @param {string} eventId The Event ID to Identify an Event
@@ -16,7 +23,6 @@ function setNatsClient(natsClient) {
  */
 function publishEvent(eventId, source, req, doc, partner) {
     try {
-        let logger = global.logger;
         let payload = {
             "eventId": eventId,
             "source": source,
@@ -40,12 +46,12 @@ function publishEvent(eventId, source, req, doc, partner) {
         }
         if (client) {
             client.publish('events', JSON.stringify(payload));
-            logger.info('Event published');
+            logger.debug('Event published');
         } else {
             logger.error('Client not initialised to publish events');
         }
     } catch (e) {
-        logger.error('publishEvent', e);
+        logger.error('Publish event', e);
     }
 }
 
