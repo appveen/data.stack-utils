@@ -6,7 +6,8 @@ log4js.configure({
   });
 
 let version = require('../package.json').version;
-let logger = log4js.getLogger(`[data.stack-streaming ${version}]`);
+let loggerName = process.env.HOSTNAME ? `[${process.env.DATA_STACK_NAMESPACE}] [${process.env.HOSTNAME}] [data.stack-logToQueue ${version}]` : `[data.stack-logToQueue ${version}]`;
+let logger = log4js.getLogger(loggerName);
 
 
 const pathNotToLog = ["/rbac/health", "/sm/health", "/dm/health", "/wf/health", "/mon/health", "/sec/health", "/ne/health"];

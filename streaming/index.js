@@ -8,7 +8,8 @@ log4js.configure({
   });
 
 let version = require('../package.json').version;
-let logger = log4js.getLogger(`[data.stack-streaming ${version}]`);
+let loggerName = process.env.HOSTNAME ? `[${process.env.DATA_STACK_NAMESPACE}] [${process.env.HOSTNAME}] [data.stack-streaming ${version}]` : `[data.stack-streaming ${version}]`;
+let logger = log4js.getLogger(loggerName);
 
 let init = (clusterName, clientId, config) => {
 
