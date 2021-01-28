@@ -1,24 +1,6 @@
-# odp-utils
-Common utils for ODP
+# KubeUtils: Kubernetes API and Docker Client
 
-## Audit Trail
-This lib contain hooks to create audit logs in a specific DB. This DB will store all the logs of data change.
-
-To store the logs, the node service should invoke the following hooks provided by the lib.
-
-1. getAuditPreSaveHook: This will return hook for pre save. collectionName(where the document is stored) has to be passed as an argument.
-
-2. getAuditPostSaveHook: This will return hook for post save. collectionName(where the audit log should be stored) has to be passed as an argument.
-
-3. getAuditPreRemoveHook: This will return hook for pre remove. No argument needed.
-
-4. getAuditPostRemoveHook: This will return hook for post remove. collectionName(where the audit log should be stored) has to be passed as an argument.
-
-To record txnId and username in the audit log, one has to pass req object in the save method at the time of document creation. 
-
-## KubeUtils: Kubernetes API and Docker Client
-
-### Kubernetes APIs
+# Kubernetes APIs
 
 The following Kubernetes services have been implemented
 
@@ -26,7 +8,7 @@ The following Kubernetes services have been implemented
 * Deployment
 * Services
 
-#### Setting up the environment
+## Setting up the environment
 
 The following environment variables must be set, 
 
@@ -35,7 +17,7 @@ The following environment variables must be set,
 * KUBERNETES_SERVICE_HOST - Hostname/IP of the Kubernetes server.
 * KUBERNETES_SERVICE_PORT - Port to access the Kubernetes server.
 
-#### APIs
+## APIs
 
 __Namespace__
 
@@ -71,18 +53,18 @@ service.getAllServicesForNamespace("capiot")
 service.deleteService("capiot", "x");
 ```
 
-## Docker
+# Docker
 
 Only one API is exposed. This is to push the image into a private registry
 
-### Setting-up the environment
+## Setting-up the environment
 
 * REGISTRY - The AWS ECR URL
 * AWS_ACCESS_KEY_ID - AWS access key.
 * AWS_SECRET_ACCESS_KEY - AWS secret
 * AWS_DEFAULT_REGION - AWS region
 
-### APIs
+## APIs
 
 ```js
 docker.pushImage("mdm:x2")
