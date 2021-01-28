@@ -2,13 +2,15 @@ var helperUtil = require('../eventsUtil/constants');
 var eventPriorityMap = helperUtil.eventPriorityMap;
 var client = null;
 
-let log4js = require('log4js');
+let log4js = require('log4js')
 
 log4js.configure({
     appenders: { out: { type: 'stdout', layout: { type: 'basic' } } },
     categories: { default: { appenders: ['out'], level: 'INFO' } }
   });
-let logger = log4js.getLogger('[data.stack-eventsUtil]');
+
+let version = require('./package.json').version;
+let logger = log4js.getLogger(`[data.stack-streaming ${version}]`);
 
 function setNatsClient(natsClient) {
     client = natsClient;

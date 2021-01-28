@@ -4,7 +4,10 @@ log4js.configure({
     appenders: { out: { type: 'stdout', layout: { type: 'basic' } } },
     categories: { default: { appenders: ['out'], level: 'INFO' } }
   });
-let logger = log4js.getLogger('[data.stack-logToQueue]');
+
+let version = require('./package.json').version;
+let logger = log4js.getLogger(`[data.stack-streaming ${version}]`);
+
 
 const pathNotToLog = ["/rbac/health", "/sm/health", "/dm/health", "/wf/health", "/mon/health", "/sec/health", "/ne/health"];
 const reqHeaderNotToLog = ['x-forwarded-for', 'dnt', 'authorization', 'access-control-allow-methods', 'content-type', 'access-control-allow-origin', 'accept', 'referer', 'accept-encoding', 'accept-language', 'cookie', 'connection'];
