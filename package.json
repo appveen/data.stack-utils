@@ -1,6 +1,6 @@
 {
   "name": "@appveen/data.stack-utils",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "General utility functions for appveen data.stack",
   "main": "index.js",
   "scripts": {
