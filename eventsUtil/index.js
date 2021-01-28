@@ -9,7 +9,7 @@ log4js.configure({
     categories: { default: { appenders: ['out'], level: 'INFO' } }
   });
 
-let version = require('./package.json').version;
+let version = require('../package.json').version;
 let logger = log4js.getLogger(`[data.stack-streaming ${version}]`);
 
 function setNatsClient(natsClient) {
