@@ -174,6 +174,8 @@ function logToQueue(name, client, queueName, collectionName, masking, serviceId)
             else {
                 try {
                     client.publish(queueName, bodyStr);
+                } catch (e) {
+                	logger.error(`[${req.headers.TxnId}] Publish error : ${e.message}`)
                 } finally {
                     next();
                 }
