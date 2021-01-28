@@ -12,6 +12,7 @@ let logger = log4js.getLogger(`[data.stack-streaming ${version}]`);
 
 let init = (clusterName, clientId, config) => {
 
+		logger.debug(`clusterName: ${clusterName}, clientId: ${clientId}, config: ${JSON.stringify(config)}`)
     client = NATS.connect(clusterName, clientId, config);
     client.on('error', function (err) {
         logger.error(err.message);
