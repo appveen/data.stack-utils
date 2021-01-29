@@ -50,8 +50,8 @@ e.getAuditPreSaveHook = (collectionName)=> {
     return function(next, req){
         if(req){
             let data = {};
-            data.user = req.headers.user
-            data.txnId = req.headers.txnid
+            data.user = req.headers.user || null
+            data.txnId = req.headers.txnid || null
             data.timestamp = new Date();
             data.data = {};
             if(this._id){
@@ -99,8 +99,8 @@ e.getAuditPreRemoveHook = ()=>{
     return function(next, req){
         if(req){
             let data = {};
-            data.user = req.headers.user
-            data.txnId = req.headers.txnid
+            data.user = req.headers.user || null
+            data.txnId = req.headers.txnid || null
             data.timestamp = new Date();
             data.data = {};
             data._metadata = {};
