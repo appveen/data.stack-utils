@@ -39,8 +39,8 @@ function publishEvent(eventId, source, req, doc, partner) {
         }
         if (req) {
             payload.triggerType = 'user';
-            payload.triggerId = req.get('user');
-            payload.txnId = req.get('txnId');
+            payload.triggerId = req.headers.user;
+            payload.txnId = req.headers.txnId;
         } else {
             payload.triggerType = 'cron';
             payload.triggerId = 'AGENT_HB_MISS';
