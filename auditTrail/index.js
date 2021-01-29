@@ -52,8 +52,10 @@ e.getAuditPreSaveHook = (collectionName)=> {
             let data = {};
             data.user = null
             data.txnId = null
-            if(req && req.headers && req.headers.user ) data.user = req.headers.user 
-            if(req && req.headers && req.headers.txnid ) data.txnid = req.headers.txnid 
+            if (req && req.headers ) {
+							data.txnId = `[${req.headers.TxnId || req.headers.txnId}]`;
+							data.user = `[${req.headers.User || req.headers.user}]`;
+						}
             data.timestamp = new Date();
             data.data = {};
             if(this._id){
@@ -103,8 +105,10 @@ e.getAuditPreRemoveHook = ()=>{
             let data = {};
             data.user = null
             data.txnId = null
-            if(req && req.headers && req.headers.user ) data.user = req.headers.user 
-            if(req && req.headers && req.headers.txnid ) data.txnid = req.headers.txnid 
+            if (req && req.headers ) {
+							data.txnId = `[${req.headers.TxnId || req.headers.txnId}]`;
+							data.user = `[${req.headers.User || req.headers.user}]`;
+						}
             data.timestamp = new Date();
             data.data = {};
             data._metadata = {};

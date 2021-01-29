@@ -26,39 +26,43 @@ function setNatsClient(natsClient) {
  */
 function publishEvent(eventId, source, req, doc, partner) {
 	let txnId = ""
-	if (req) txnId = `[${req.headers.TxnId}] `
-    try {
-        let payload = {
-            "eventId": eventId,
-            "source": source,
-            "documentId": doc._id,
-            "documentName": doc.name,
-            "app": doc.app,
-            "timestamp": new Date().toISOString(),
-            "priority": eventPriorityMap[eventId],
-        }
-        if (req) {
-            payload.triggerType = 'user';
-            payload.triggerId = req.headers.user;
-            payload.txnId = req.headers.txnId;
-        } else {
-            payload.triggerType = 'cron';
-            payload.triggerId = 'AGENT_HB_MISS';
-        }
-        if (partner) {
-            payload.partnerId = partner._id;
-            payload.partnerName = partner.name;
-        }
-        if (client) {
-            client.publish('events', JSON.stringify(payload));
-            logger.debug(`${txnId}Event published`);
-            logger.debug(`${txnId}Event payload - JSON.stringify(payload)`);
-        } else {
-            logger.error(`${txnId}Client not initialised to publish events`);
-        }
-    } catch (e) {
-        logger.error(`${txnId}Publish event : ${e.message}`);
-    }
+	let user = ""
+	if (req && req.headers ) {
+		txnId = `[${req.headers.TxnId || req.headers.txnId}]`;
+		user = `[${req.headers.User || req.headers.user}]`;
+	}
+  try {
+      let payload = {
+          "eventId": eventId,
+          "source": source,
+          "documentId": doc._id,
+          "documentName": doc.name,
+          "app": doc.app,
+          "timestamp": new Date().toISOString(),
+          "priority": eventPriorityMap[eventId],
+      }
+      if (req) {
+          payload.triggerType = 'user';
+          payload.triggerId = user;
+          payload.txnId = txnId;
+      } else {
+          payload.triggerType = 'cron';
+          payload.triggerId = 'AGENT_HB_MISS';
+      }
+      if (partner) {
+          payload.partnerId = partner._id;
+          payload.partnerName = partner.name;
+      }
+      if (client) {
+          client.publish('events', JSON.stringify(payload));
+          logger.debug(`${txnId}Event published`);
+          logger.debug(`${txnId}Event payload - JSON.stringify(payload)`);
+      } else {
+          logger.error(`${txnId}Client not initialised to publish events`);
+      }
+  } catch (e) {
+      logger.error(`${txnId}Publish event : ${e.message}`);
+  }
 }
 
 module.exports = {
