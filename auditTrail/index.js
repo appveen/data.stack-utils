@@ -106,8 +106,8 @@ e.getAuditPreRemoveHook = ()=>{
             data.user = null
             data.txnId = null
             if (req && req.headers ) {
-							data.txnId = `[${req.headers.TxnId || req.headers.txnId}]`;
-							data.user = `[${req.headers.User || req.headers.user}]`;
+							data.txnId = req.headers.TxnId || req.headers.txnId;
+							data.user = req.headers.User || req.headers.user;
 						}
             data.timestamp = new Date();
             data.data = {};
