@@ -110,7 +110,7 @@ function logToQueue(name, client, queueName, collectionName, masking, serviceId)
                 next();
                 return;
             }
-            else if (req.path.endsWith('/health/live') || req.path.endsWith('/health/ready')) {
+            else if (req.originalUrl.endsWith('/health/live') || req.originalUrl.endsWith('/health/ready')) {
                 next();
                 return;
             }
