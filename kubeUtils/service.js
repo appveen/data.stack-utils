@@ -60,8 +60,7 @@ e.createService = (_namespace, _name, _port,_release) => {
 		"spec": {
 			"type": "ClusterIP",
 			"selector": {
-				 "app": _name,
-				 "release": _release
+				 "app": _name
 			},
 			"ports": [
 				{

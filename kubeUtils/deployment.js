@@ -57,15 +57,13 @@ e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options,_rele
 			"replicas": 1,
 			"selector": {
 				"matchLabels": {
-					"app": _name,
-					"release": _release
+					"app": _name
 				}
 			},
 			"template": {
 				"metadata": {
 					"labels": {
-						"app": _name,
-						"release": _release
+						"app": _name
 					}
 				},
 				"spec": {
