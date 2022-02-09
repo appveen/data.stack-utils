@@ -19,7 +19,7 @@ const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
 
 let e = {};
 
-e.uploadFile = async (file, connectionString, containerName) => {
+e.uploadFile = async (file, connectionString, containerName, appName, serviceName) => {
   logger.info('Uploading file to Azure Blob');
   logger.debug(JSON.stringify({ containerName, blobName: file.filename }));
 
@@ -31,7 +31,13 @@ e.uploadFile = async (file, connectionString, containerName) => {
     let stream = fs.createReadStream(file.path);
 
     await blockBlobClient.uploadStream(stream, uploadOptions.bufferSize, uploadOptions.maxBuffers,
-      { blobHTTPHeaders: { blobContentType: file.contentType }, metadata : { filename: file.metadata.filename } });
+      { blobHTTPHeaders: { blobContentType: file.contentType },
+        metadata : { 
+          'data_stack_filename': file.metadata.filename,
+          'data_stack_app': appName,
+          'data_stack_dataservice': serviceName
+        } 
+      });
 
     logger.info('File uploaded to Azure Blob storage.');
     return file;
