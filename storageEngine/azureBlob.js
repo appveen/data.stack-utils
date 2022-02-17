@@ -169,9 +169,10 @@ e.deleteFile = async (data) => {
   try {
     const blobServiceClient = BlobServiceClient.fromConnectionString(data.connectionString);
     const containerClient = blobServiceClient.getContainerClient(data.containerName);
-    const deleteContainerResponse = await containerClient.deleteBlob(data.fileName);
+    const blockBlobClient = containerClient.getBlockBlobClient(data.filename);
+    const deleteContainerResponse = blockBlobClient.delete({ deleteSnapshots: "include" });
     
-    logger.info('Blob file marked to be deleted on Azure ', deleteContainerResponse.requestId);
+    logger.info('Blob file marked to be deleted on Azure ', deleteContainerResponse);
   } catch (err) {
     logger.error('Error deleting file from Azure Blob - ', err.message);
     throw new Error(err);
