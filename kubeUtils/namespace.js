@@ -22,45 +22,21 @@ e.getAllNamespaces = () => {
 
 e.getNamespace = (_name) => {
 	return req.get(_baseURL + "/" + _name)
-	.then(_d => {
-		return _d
-	}, _e => {
-		console.log("ERROR");
-		console.log(_e.message);
-	});
 }
 
 e.createNamespace = (_name,_release) => {
 	var data = {"metadata": {"name": _name},"spec": {"selector": {"release" : _release}}};
 	return req.post(_baseURL, data)
-	.then(_d => {
-		return _d;
-	}, _e => {
-		console.log("ERROR");
-		console.log(_e.message);
-	});
 }
 
 e.deleteNamespace = (_name) => {
 	var data = {};
 	return req.delete(_baseURL + "/" + _name, data)
-	.then(_d => {
-		return _d;
-	}, _e => {
-		console.log("ERROR");
-		console.log(_e.message);
-	});
 }
 
 e.editNameSpace = (_name,_release)=>{
 	var data = {"metadata": {"name": _name},"spec": {"selector": {"release" : _release}}};
 	return req.put(_baseURL + "/" + _name,data)
-	.then(_d => {
-		return _d
-	}, _e => {
-		console.log("ERROR");
-		console.log(_e.message);
-	});
 }
 
 module.exports = e;

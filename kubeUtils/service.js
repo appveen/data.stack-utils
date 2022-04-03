@@ -51,7 +51,6 @@ e.getService = (_namespace, _name) => {
 }
 
 e.createService = (_namespace, _name, _port,_release) => {
-	console.log("Creating a new service :: ", _namespace, _name, _port);
 	var data = {
 		"metadata": {
 			"name": _name,
@@ -80,7 +79,6 @@ e.createService = (_namespace, _name, _port,_release) => {
 }
 
 e.updateService = (_namespace, _name, _port) => {
-	console.log("Updating the service :: ", _namespace, _name, _port);
 	var data = {
   		"spec": {
     	"ports": [
@@ -101,7 +99,6 @@ e.updateService = (_namespace, _name, _port) => {
 }
 
 e.deleteService = (_namespace, _name) => {
-	console.log("Deleting service ::", _namespace, _name);
 	var data = {};
 	return req.delete(_baseURL + "/namespaces/" + _namespace + "/services/" + _name, data)
 	.then(_d => {

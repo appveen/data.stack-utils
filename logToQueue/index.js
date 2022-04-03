@@ -13,7 +13,7 @@ let logger = log4js.getLogger(loggerName);
 const pathNotToLog = ["/rbac/health", "/sm/health", "/dm/health", "/wf/health", "/mon/health", "/sec/health", "/ne/health"];
 const reqHeaderNotToLog = ['x-forwarded-for', 'dnt', 'authorization', 'access-control-allow-methods', 'content-type', 'access-control-allow-origin', 'accept', 'referer', 'accept-encoding', 'accept-language', 'cookie', 'connection'];
 const resHeaderNotToLog = ['x-powered-by', 'access-control-allow-origin', 'content-type', 'content-length', 'etag'];
-let supportedHTTPMethods = ['GET', 'PUT', 'POST', 'DELETE'];
+let supportedHTTPMethods = ['PUT', 'POST', 'DELETE'];
 
 if (process.env.API_LOGS_METHODS && process.env.API_LOGS_METHODS.split(',').length > 0) {
     supportedHTTPMethods = process.env.API_LOGS_METHODS.split(',').map(e => e.trim());

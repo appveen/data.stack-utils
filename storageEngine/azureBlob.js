@@ -20,7 +20,7 @@ const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
 let e = {};
 
 e.uploadFile = async (data) => {
-  logger.info('Uploading file to Azure Blob');
+  logger.debug(`Uploading file to Azure Blob : ${data.file.metadata.filename}`);
   logger.debug(JSON.stringify({
     containerName: data.containerName,
     blobName: data.file && data.file.filename,
@@ -45,17 +45,17 @@ e.uploadFile = async (data) => {
         }
       });
 
-    logger.info('File uploaded to Azure Blob storage.');
+    logger.debug(`File uploaded to Azure Blob storage. : ${data.file.metadata.filename}`);
     return data.file;
   } catch (err) {
-    logger.error('Error Uploading File to Azure Blob - ', err.message);
+    logger.error(`Error Uploading File to Azure Blob. : ${data.file.metadata.filename} : ${err.message}`);
     throw new Error(err);
   }
 };
 
 e.downloadFileBuffer = async (data) => {
-  logger.info('Downloading File as Buffer from Azure Blob');
-  logger.debug(JSON.stringify({ containerName: data.containerName, blobName: data.fileName }));
+  logger.debug(`Downloading File as Buffer from Azure Blob : ${data.fileName}`);
+  logger.trace(JSON.stringify({ containerName: data.containerName, blobName: data.fileName }));
 
   try {
     const blobServiceClient = BlobServiceClient.fromConnectionString(data.connectionString);
@@ -71,23 +71,23 @@ e.downloadFileBuffer = async (data) => {
       });
       downloadBlockBlobResponse.readableStreamBody.on("end", () => {
         var chunk = Buffer.concat(chunks);
-        logger.debug('Downloaded Buffer from Azure Blob.');
+        logger.debug(`Downloaded buffer from Azure Blob : ${data.fileName}`);
         resolve(chunk);
       });
       downloadBlockBlobResponse.readableStreamBody.on("error", function (err) {
-        logger.error('Error downloading file from Azure Blob - ', err.message);
+        logger.error(`Error downloading file from Azure Blob : ${data.fileName} : ${err.message}`);
         reject(err);
       });
     });
   } catch (err) {
-    logger.error('Error downloading file as buffer from Azure Blob - ', err.message);
+    logger.error(`Error downloading file as buffer from Azure Blob : ${data.fileName} : ${err.message}`);
     throw new Error(err);
   }
 };
 
 e.downloadFile = async (data) => {
-  logger.info('Downloading File from Azure Blob.');
-  logger.debug(JSON.stringify({ containerName: data.containerName, blobName: data.fileName }));
+  logger.debug(`Downloading File from Azure Blob: ${data.fileName}`);
+  logger.trace(JSON.stringify({ containerName: data.containerName, blobName: data.fileName }));
 
   try {
     const blobServiceClient = BlobServiceClient.fromConnectionString(data.connectionString);
@@ -104,24 +104,24 @@ e.downloadFile = async (data) => {
 
       downloadBlockBlobResponse.readableStreamBody.on("end", () => {
         var chunk = Buffer.concat(chunks);
-        logger.debug('Downloaded File from Azure Blob.');
+        logger.debug(`Downloaded File from Azure Blob : ${data.fileName}`);
         resolve(chunk);
       }).pipe(data.res);
 
       downloadBlockBlobResponse.readableStreamBody.on("error", function (err) {
-        logger.error('Error downloading file from Azure Blob - ', err.message);
+        logger.error(`Error downloading file from Azure Blob : ${data.fileName} : ${err.message}`);
         reject(err);
       });
     });
   } catch (err) {
-    logger.error('Error downloading file from Azure Blob - ', err.message);
+    logger.error(`Error downloading file from Azure Blob : ${data.fileName} : ${err.message}`);
     throw new Error(err);
   }
 };
 
 e.downloadFileLink = async (data) => {
-  logger.info('Generating file download link for Azure Blob.');
-  logger.debug(JSON.stringify({
+  logger.debug(`Generating file download link for Azure Blob : ${data.file.filename}`);
+  logger.trace(JSON.stringify({
     containerName: data.containerName,
     blobName: data.file && data.file.filename,
     timeout: data.timeout
@@ -144,13 +144,13 @@ e.downloadFileLink = async (data) => {
       contentType: data.file.contentType
     };
 
-    logger.trace('SAS Options - ', JSON.stringify(sasOptions));
+    logger.trace(`SAS Options: ${data.file.filename} : `, JSON.stringify(sasOptions));
 
     const sasToken = generateBlobSASQueryParameters(sasOptions, sharedKeyCred).toString();
 
-    logger.trace('SAS Token - ', sasToken);
+    logger.trace(`SAS Token : ${data.file.filename} : `, sasToken);
 
-    logger.info(`Download Url for ${data.file.filename} :: ${blockBlobClient.url}?${sasToken}`);
+    logger.debug(`Download Url for ${data.file.filename} :: ${blockBlobClient.url}?${sasToken}`);
 
     return `${blockBlobClient.url}?${sasToken}`
   } catch (err) {
@@ -160,8 +160,8 @@ e.downloadFileLink = async (data) => {
 };
 
 e.deleteFile = async (data) => {
-  logger.info('Deleting file from Azure Blob.');
-  logger.debug(JSON.stringify({
+  logger.debug(`Deleting file from Azure Blob : ${data.filename}`);
+  logger.trace(JSON.stringify({
     containerName: data.containerName,
     blobName: data.filename,
   }));
@@ -172,7 +172,7 @@ e.deleteFile = async (data) => {
     const blockBlobClient = containerClient.getBlockBlobClient(data.filename);
     const deleteContainerResponse = blockBlobClient.delete({ deleteSnapshots: "include" });
     
-    logger.info('Blob file marked to be deleted on Azure ', deleteContainerResponse);
+    logger.debug(`Blob file marked to be deleted on Azure : ${data.filename}`, deleteContainerResponse);
   } catch (err) {
     logger.error('Error deleting file from Azure Blob - ', err.message);
     throw new Error(err);
