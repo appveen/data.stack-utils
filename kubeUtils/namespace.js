@@ -30,7 +30,7 @@ e.createNamespace = (_name,_release) => {
 }
 
 e.deleteNamespace = (_name) => {
-	var data = {};
+	var data = { "spec": { "finalizers": [] } };
 	return req.delete(_baseURL + "/" + _name, data)
 }
 
