@@ -30,13 +30,18 @@ e.createNamespace = (_name,_release) => {
 }
 
 e.deleteNamespace = (_name) => {
-	var data = {"metadata": {"name": _name},"spec": {"selector": {"release" : _release}, "finalizers": [] }};
+	var data = {};
 	return req.delete(_baseURL + "/" + _name, data)
 }
 
 e.editNameSpace = (_name,_release)=>{
 	var data = {"metadata": {"name": _name},"spec": {"selector": {"release" : _release}}};
 	return req.put(_baseURL + "/" + _name,data)
+}
+
+e.updateNamespace = (_name, data)=> {
+	console.log("Updating NS :: ", JSON.stringify(data));
+	return req.put(_baseURL + "/" + _name + "/finalize",data)
 }
 
 module.exports = e;
