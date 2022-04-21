@@ -39,4 +39,9 @@ e.editNameSpace = (_name,_release)=>{
 	return req.put(_baseURL + "/" + _name,data)
 }
 
+e.updateNamespace = (_name, data)=> {
+	console.log("Updating NS :: ", JSON.stringify(data));
+	return req.put(_baseURL + "/" + _name + "/finalize",data)
+}
+
 module.exports = e;
