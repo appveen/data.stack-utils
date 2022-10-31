@@ -17,6 +17,7 @@ let logger = log4js.getLogger(loggerName);
 
 let e = {};
 
+
 e.uploadFile = async (data) => {
     try {
         logger.debug(`Uploading file to S3 Bucket : ${data.file.metadata.filename}`);
@@ -52,15 +53,6 @@ e.uploadFile = async (data) => {
         });
 
         uploadParams.Body = stream;
-
-        // s3.upload(uploadParams, (err, data) => {
-        //     if (err) {
-        //         logger.error(`Error uploading to S3 :: ${err}`);
-        //     }
-        //     if (data) {
-        //         logger.info(`Upload Success :: ${JSON.stringify(data)}`);
-        //     }
-        // });
 
         let uploadedFile = await s3.upload(uploadParams).promise();
 
@@ -107,14 +99,48 @@ e.downloadFileBuffer = async (data) => {
                 resolve(chunk);
             });
             readStream.on('error', (err) => {
-                logger.error(`Error downloading file from S3 :: ${data.fileName} : ${err.message}`);
+                logger.error(`Error downloading file from S3 :: ${data.fileName} :: ${err.message}`);
                 reject(err);
             })
         });
     } catch (err) {
-        logger.error(`Error downloading file as buffer from S3 :: ${data.fileName} : ${err.message}`);
+        logger.error(`Error downloading file as buffer from S3 :: ${data.fileName} :: ${err.message}`);
         throw new Error(err);
     }
 };
+
+
+e.deleteFile = async() => {
+    try {
+        logger.debug(`Deleting File from S3 :: ${data.fileName}`);
+        logger.trace(JSON.stringify({
+            accessKeyId: data.accessKeyId,
+            secretAccessKey: data.secretAccessKey,
+            region: data.region,
+            bucket: data.bucket
+        }));
+
+        AWS.config.update({
+            accessKeyId: data.accessKeyId,
+            secretAccessKey: data.secretAccessKey,
+            region: data.region
+        });
+
+        let s3 = new AWS.S3();
+
+        let deleteParams = {
+            Bucket: data.bucket,
+            Key: data.fileName
+        };
+
+        await s3.deleteObject(deleteParams).promise();
+        logger.info(`File deleted in S3`);
+
+    } catch (err) {
+        logger.error(`Error deleting file from S3 :: ${data.fileName} :: ${err.message}`);
+        throw new Error(err);
+    }
+};
+
 
 module.exports = e;
