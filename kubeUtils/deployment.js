@@ -88,6 +88,7 @@ e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options,_rele
 	}
 	if (_options.livenessProbe) data.spec.template.spec.containers[0]["livenessProbe"] = _options.livenessProbe;
 	if (_options.readinessProbe) data.spec.template.spec.containers[0]["readinessProbe"] = _options.readinessProbe;
+	if (_options.startupProbe) data.spec.template.spec.containers[0]["startupProbe"] = _options.startupProbe;
 	if (_volumeMounts){
 		data.spec.template.spec.containers[0]["volumeMounts"] = [];
 		data.spec.template.spec["volumes"] = [];
@@ -138,6 +139,7 @@ e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options,_volu
 	}
 	if (_options.livenessProbe) data.spec.template.spec.containers[0]["livenessProbe"] = _options.livenessProbe;
 	if (_options.readinessProbe) data.spec.template.spec.containers[0]["readinessProbe"] = _options.readinessProbe;
+	if (_options.startupProbe) data.spec.template.spec.containers[0]["startupProbe"] = _options.startupProbe;
 	if (_volumeMounts){
 		data.spec.template.spec.containers[0]["volumeMounts"] = [];
 		data.spec.template.spec["volumes"] = [];
