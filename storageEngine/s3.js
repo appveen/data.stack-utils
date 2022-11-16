@@ -20,7 +20,7 @@ let e = {};
 
 e.uploadFile = async (data) => {
     try {
-        logger.debug(`Uploading file to S3 Bucket : ${data.file.metadata.filename}`);
+        logger.debug(`Uploading file to S3 Bucket : ${data.file.metadata.fileName}`);
         logger.debug(JSON.stringify({
             accessKeyId: data.accessKeyId,
             secretAccessKey: data.secretAccessKey,
@@ -38,7 +38,7 @@ e.uploadFile = async (data) => {
 
         let uploadParams = {
             Bucket: data.bucket,
-            Key: data.file.filename,
+            Key: data.file.fileName,
             Metadata: {
                 'data_stack_filename': data.file.metadata.filename,
                 'data_stack_app': data.appName,
@@ -110,7 +110,7 @@ e.downloadFileBuffer = async (data) => {
 };
 
 
-e.deleteFile = async() => {
+e.deleteFile = async (data) => {
     try {
         logger.debug(`Deleting File from S3 :: ${data.fileName}`);
         logger.trace(JSON.stringify({
