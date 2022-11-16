@@ -40,7 +40,7 @@ e.uploadFile = async (data) => {
             Bucket: data.bucket,
             Key: data.file.fileName,
             Metadata: {
-                'data_stack_filename': data.file.metadata.fileName,
+                'data_stack_filename': data.file.metadata.filename,
                 'data_stack_app': data.appName,
                 'data_stack_dataServiceId': data.serviceId,
                 'data_stack_dataServiceName': data.serviceName
