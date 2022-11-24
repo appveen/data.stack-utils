@@ -60,7 +60,7 @@ e.downloadFileBuffer = async (data) => {
   try {
     const blobServiceClient = BlobServiceClient.fromConnectionString(data.connectionString);
     const containerClient = blobServiceClient.getContainerClient(data.containerName);
-    const blockBlobClient = containerClient.getBlockBlobClient(data.fileName);
+    const blockBlobClient = containerClient.getBlockBlobClient(data.file.filename);
 
     const downloadBlockBlobResponse = await blockBlobClient.download(0);
 
