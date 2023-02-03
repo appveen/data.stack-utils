@@ -23,7 +23,8 @@ e.uploadFile = async (data) => {
         logger.debug(`Uploading file to Google Cloud Storage Bucket : ${data.file.metadata.filename}`);
         logger.debug(JSON.stringify({
             bucket: data.bucket,
-            projectId: data.projectId
+            projectId: data.projectId,
+            file: data.file.path
         }));
 
         const storage = new Storage({
@@ -34,19 +35,22 @@ e.uploadFile = async (data) => {
         let uploadParams = {
             destination: data.file.fileName,
             preconditionOpts: { ifGenerationMatch: 0 }
-            // Metadata: {
-            //     'data_stack_filename': data.file.metadata.filename,
-            //     'data_stack_app': data.appName,
-            //     'data_stack_dataServiceId': data.serviceId,
-            //     'data_stack_dataServiceName': data.serviceName
-            // }
         };
 
         let bucket = await storage.bucket(data.bucket);
 
         await bucket.upload(data.file.path, uploadParams);
 
-        logger.info(`Upload Success :: ${JSON.stringify(bucket)}`);
+        logger.info(`Upload Success :: ${JSON.stringify({bucket, file: data.file.path})}`);
+
+        await bucket.file(data.file.path).setMetadata({
+            'data_stack_filename': data.file.metadata.filename,
+            'data_stack_app': data.appName,
+            'data_stack_dataServiceId': data.serviceId,
+            'data_stack_dataServiceName': data.serviceName
+        });
+
+        logger.info(`Metadata set successfully :: ${JSON.stringify({bucket, file: data.file.path})}`);
     } catch (err) {
         logger.error(`Error uploading file to Google Cloud Storage :: ${err}`);
     }
@@ -58,7 +62,8 @@ e.downloadFile = async (data) => {
         logger.debug(`Downloading file from Google Cloud Storage Bucket : ${data.fileName}`);
         logger.debug(JSON.stringify({
             bucket: data.bucket,
-            projectId: data.projectId
+            projectId: data.projectId,
+            file: data.tmpFilePath
         }));
 
         const storage = new Storage({
@@ -74,9 +79,39 @@ e.downloadFile = async (data) => {
 
         await bucket.file(data.fileName).download(options);
 
-        logger.info(`Download Success :: ${JSON.stringify(bucket)}`);
+        logger.info(`Download Success :: ${JSON.stringify({bucket, file: data.tmpFilePath})}`);
     } catch (err) {
         logger.error(`Error downloading file from Google Cloud Storage :: ${err}`);
+    }
+};
+
+
+e.deleteFile = async (data) => {
+    try {
+        logger.debug(`Deleting file from Google Cloud Storage Bucket : ${data.fileName}`);
+        logger.debug(JSON.stringify({
+            bucket: data.bucket,
+            projectId: data.projectId
+        }));
+
+        const storage = new Storage({
+            projectId: data.projectId,
+            keyFilename: data.gcsConfigFilePath
+        });
+
+        let bucket = await storage.bucket(data.bucket);
+
+        let generationNumber = await bucket.file(data.fileName).generation;
+
+        const options = {
+            ifGenerationMatch: generationNumber
+        };
+
+        await bucket.file(data.fileName).delete(options);
+
+        logger.info(`Delete Success :: ${JSON.stringify(bucket)}`);
+    } catch (err) {
+        logger.error(`Error deleting file from Google Cloud Storage :: ${err}`);
     }
 };
 
