@@ -43,7 +43,7 @@ e.uploadFile = async (data) => {
 
         logger.info(`Upload Success :: ${JSON.stringify({bucket, file: data.file.path})}`);
 
-        await bucket.file(data.file.path).setMetadata({
+        await bucket.file(data.file.fileName).setMetadata({
             'data_stack_filename': data.file.metadata.filename,
             'data_stack_app': data.appName,
             'data_stack_dataServiceId': data.serviceId,
