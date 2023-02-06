@@ -41,16 +41,18 @@ e.uploadFile = async (data) => {
 
         await bucket.upload(data.file.path, uploadParams);
 
-        logger.info(`Upload Success :: ${JSON.stringify({bucket, file: data.file.path})}`);
+        logger.info(`Upload Success :: ${JSON.stringify({ bucket, file: data.file.metadata.filename })}`);
 
         await bucket.file(data.file.fileName).setMetadata({
-            'data_stack_filename': data.file.metadata.filename,
-            'data_stack_app': data.appName,
-            'data_stack_dataServiceId': data.serviceId,
-            'data_stack_dataServiceName': data.serviceName
+            'metadata': {
+                'data_stack_filename': data.file.metadata.filename,
+                'data_stack_app': data.appName,
+                'data_stack_dataServiceId': data.serviceId,
+                'data_stack_dataServiceName': data.serviceName
+            }
         });
 
-        logger.info(`Metadata set successfully :: ${JSON.stringify({bucket, file: data.file.path})}`);
+        logger.info(`Metadata set successfully :: ${JSON.stringify({ bucket, file: data.file.path })}`);
     } catch (err) {
         logger.error(`Error uploading file to Google Cloud Storage :: ${err}`);
     }
@@ -79,7 +81,7 @@ e.downloadFile = async (data) => {
 
         await bucket.file(data.fileName).download(options);
 
-        logger.info(`Download Success :: ${JSON.stringify({bucket, file: data.tmpFilePath})}`);
+        logger.info(`Download Success :: ${JSON.stringify({ bucket, file: data.tmpFilePath })}`);
     } catch (err) {
         logger.error(`Error downloading file from Google Cloud Storage :: ${err}`);
     }
