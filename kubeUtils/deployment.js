@@ -47,7 +47,7 @@ e.getDeployment = (_namespace, _name) => {
 		});
 }
 
-e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options,_release,_volumeMounts) => {
+e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options, _release, _volumeMounts) => {
 	var data = {
 		"metadata": {
 			"name": _name,
@@ -89,20 +89,23 @@ e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options,_rele
 	if (_options.livenessProbe) data.spec.template.spec.containers[0]["livenessProbe"] = _options.livenessProbe;
 	if (_options.readinessProbe) data.spec.template.spec.containers[0]["readinessProbe"] = _options.readinessProbe;
 	if (_options.startupProbe) data.spec.template.spec.containers[0]["startupProbe"] = _options.startupProbe;
-	if (_volumeMounts){
+	if (_volumeMounts) {
 		data.spec.template.spec.containers[0]["volumeMounts"] = [];
 		data.spec.template.spec["volumes"] = [];
-		for(var mount in _volumeMounts){
+		for (var mount in _volumeMounts) {
+			let tempVolumeConfig = {
+				"name": mount
+			};
 			data.spec.template.spec.containers[0]["volumeMounts"].push({
-				"name" : mount,
-				"mountPath" : _volumeMounts[mount]["containerPath"]
-			});
-			data.spec.template.spec["volumes"].push({
 				"name": mount,
-				"hostPath": {
-					"path": _volumeMounts[mount]["hostPath"]
-				}
+				"mountPath": _volumeMounts[mount]["containerPath"]
 			});
+			if (!_volumeMounts[mount].mountType || _volumeMounts[mount].mountType == 'HOSTPATH') {
+				tempVolumeConfig["hostPath"] = { "path": _volumeMounts[mount]["hostPath"] };
+			} else {
+				tempVolumeConfig["persistentVolumeClaim"] = { "claimName": _volumeMounts[mount]["hostPath"] };
+			}
+			data.spec.template.spec["volumes"].push(tempVolumeConfig);
 		}
 	}
 	return req.post(_baseURL + "/namespaces/" + _namespace + "/deployments", data)
@@ -113,7 +116,7 @@ e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options,_rele
 		});
 }
 
-e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options,_volumeMounts) => {
+e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options, _volumeMounts) => {
 	var data = {
 		"spec": {
 			"template": {
@@ -140,20 +143,23 @@ e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options,_volu
 	if (_options.livenessProbe) data.spec.template.spec.containers[0]["livenessProbe"] = _options.livenessProbe;
 	if (_options.readinessProbe) data.spec.template.spec.containers[0]["readinessProbe"] = _options.readinessProbe;
 	if (_options.startupProbe) data.spec.template.spec.containers[0]["startupProbe"] = _options.startupProbe;
-	if (_volumeMounts){
+	if (_volumeMounts) {
 		data.spec.template.spec.containers[0]["volumeMounts"] = [];
 		data.spec.template.spec["volumes"] = [];
-		for(var mount in _volumeMounts){
+		for (var mount in _volumeMounts) {
+			let tempVolumeConfig = {
+				"name": mount
+			};
 			data.spec.template.spec.containers[0]["volumeMounts"].push({
-				"name" : mount,
-				"mountPath" : _volumeMounts[mount]["containerPath"]
-			});
-			data.spec.template.spec["volumes"].push({
 				"name": mount,
-				"hostPath": {
-					"path": _volumeMounts[mount]["hostPath"]
-				}
+				"mountPath": _volumeMounts[mount]["containerPath"]
 			});
+			if (!_volumeMounts[mount].mountType || _volumeMounts[mount].mountType == 'HOSTPATH') {
+				tempVolumeConfig["hostPath"] = { "path": _volumeMounts[mount]["hostPath"] };
+			} else {
+				tempVolumeConfig["persistentVolumeClaim"] = { "claimName": _volumeMounts[mount]["hostPath"] };
+			}
+			data.spec.template.spec["volumes"].push(tempVolumeConfig);
 		}
 	}
 	return req.patch(_baseURL + "/namespaces/" + _namespace + "/deployments/" + _name, data)
