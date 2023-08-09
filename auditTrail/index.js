@@ -87,6 +87,7 @@ e.getAuditPostSaveHook = (collectionName,client,queueName)=>{
             auditData._metadata = {};
             auditData._metadata.deleted = false;
             auditData.data = {};
+            auditData.data.app = doc.app;
             auditData.data._id = doc._id;
             auditData.data.new = {};
             auditData.data.old = {};
@@ -117,6 +118,7 @@ e.getAuditPreRemoveHook = ()=>{
             data.data.new = null;
             data.data.old = this.toJSON();
             data.data._id = this._id;
+            data.data.app = this.app;
             data._metadata.deleted = false;
             this._auditData = data;
         }
