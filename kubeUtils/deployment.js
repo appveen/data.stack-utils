@@ -47,7 +47,7 @@ e.getDeployment = (_namespace, _name) => {
 		});
 }
 
-e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options, _release, _volumeMounts) => {
+e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options, _release, _volumeMounts, _envFrom) => {
 	var data = {
 		"metadata": {
 			"name": _name,
@@ -108,6 +108,18 @@ e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options, _rel
 			data.spec.template.spec["volumes"].push(tempVolumeConfig);
 		}
 	}
+	if (_envFrom) {
+		data.spec.template.spec.containers[0].envFrom = [];
+		_envFrom.forEach(item => {
+			if (item.type == 'secret') {
+				data.spec.template.spec.containers[0].envFrom.push({
+					secretRef: {
+						name: item.name
+					}
+				});
+			}
+		});
+	}
 	return req.post(_baseURL + "/namespaces/" + _namespace + "/deployments", data)
 		.then(_d => {
 			return _d;
@@ -116,7 +128,7 @@ e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options, _rel
 		});
 }
 
-e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options, _volumeMounts) => {
+e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options, _volumeMounts, _envFrom) => {
 	var data = {
 		"spec": {
 			"template": {
@@ -161,6 +173,18 @@ e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options, _vol
 			}
 			data.spec.template.spec["volumes"].push(tempVolumeConfig);
 		}
+	}
+	if (_envFrom) {
+		data.spec.template.spec.containers[0].envFrom = [];
+		_envFrom.forEach(item => {
+			if (item.type == 'secret') {
+				data.spec.template.spec.containers[0].envFrom.push({
+					secretRef: {
+						name: item.name
+					}
+				});
+			}
+		});
 	}
 	return req.patch(_baseURL + "/namespaces/" + _namespace + "/deployments/" + _name, data)
 		.then(_d => {
