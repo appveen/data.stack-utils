@@ -2,132 +2,86 @@
 
 var e = {};
 
-const req = require('request');
+const got = require('got');
 const fs = require("fs");
 
 const URL = "https://kubernetes.default.svc";
 
 var dataStack_token = "";
 let dataStack_sa_path = "/var/run/secrets/kubernetes.io/serviceaccount/token";
-if(fs.existsSync(dataStack_sa_path)) dataStack_token = fs.readFileSync(dataStack_sa_path);
+if (fs.existsSync(dataStack_sa_path)) dataStack_token = fs.readFileSync(dataStack_sa_path);
 
-e.get = (_api) => {
-	var options = {
-		method: "GET",
-		url: URL + _api,
-		json: true,
-		strictSSL: false,
-		headers: {
-			'Content-Type': 'application/json',
-			"Authorization": "Bearer " + dataStack_token
-		},
+const headers = {
+	"Authorization": "Bearer " + dataStack_token
+};
+
+let response = {
+	statusCode: 200,
+	body: null
+};
+
+e.get = async (url) => {
+	try {
+		await got.get(`${URL}${url}`, {
+			headers: headers
+		}).json()
+			.then(data => response.body = data)
+	} catch (error) {
+		response.statusCode = 400;
 	}
-	return new Promise((resolve, reject) => {
-		req(options, function (err, res, body) {
-			if (err) {
-				return reject(err);
-			}
-			else {
-				return resolve({ statusCode: res.statusCode, body: body });
-			}
-		})
-	})
+	return response;
+};
+
+e.post = async (url, body) => {
+	try {
+		await got.post(`${URL}${url}`, {
+			headers: headers,
+			json: body
+		}).json()
+			.then(data => response.body = data)
+	} catch (error) {
+		response.statusCode = 400;
+	}
+	return response;
 }
 
-e.post = (_api, _body) => {
-	var options = {
-		method: "POST",
-		url: URL + _api,
-		strictSSL: false,
-		headers: {
-			'Content-Type': 'application/json',
-			"Authorization": "Bearer " + dataStack_token
-		},
-		json: true,
-		body: _body,
+e.patch = async (url, body) => {
+	try {
+		await got.patch(`${URL}${url}`, {
+			headers: {
+				"Authorization": "Bearer " + dataStack_token,
+				"Content-Type": "application/merge-patch+json"
+			},
+			json: body
+		}).then(data => response.body = data.body);
+	} catch (error) {
+		response.statusCode = 400;
 	}
-	return new Promise((resolve, reject) => {
-		req(options, function (err, res, body) {
-			if (err) {
-				return reject(err);
-			}
-			else {
-				return resolve({ statusCode: res.statusCode, body: body });
-			}
-		})
-	})
+	return response;
 }
 
-e.patch = (_api, _body) => {
-	var options = {
-		method: "PATCH",
-		url: URL + _api,
-		strictSSL: false,
-		headers: {
-			"Authorization": "Bearer " + dataStack_token,
-			"Content-Type": "application/merge-patch+json"
-		},
-		json: true,
-		body: _body
+e.put = async (url, body) => {
+	try {
+		await got.put(`${URL}${url}`, {
+			headers: headers,
+			json: body
+		}).json().then(data => response.body = data);
+	} catch (error) {
+		response.statusCode = 400;
 	}
-	return new Promise((resolve, reject) => {
-		req(options, function (err, res, body) {
-			if (err) {
-				return reject(err);
-			}
-			else {
-				return resolve({ statusCode: res.statusCode, body: body });
-			}
-		})
-	})
+	return response.body;
 }
 
-e.delete = (_api, _body) => {
-	var options = {
-		method: "DELETE",
-		url: URL + _api,
-		strictSSL: false,
-		headers: {
-			'Content-Type': 'application/json',
-			"Authorization": "Bearer " + dataStack_token
-		},
-		json: true,
-		body: _body
+e.delete = async (url, body) => {
+	try {
+		await got.delete(`${URL}${url}`, {
+			headers: headers,
+			json: body
+		}).then(data => response.body = data.body);
+	} catch (error) {
+		response.statusCode = 400;
 	}
-	return new Promise((resolve, reject) => {
-		req(options, function (err, res, body) {
-			if (err) {
-				return reject(err);
-			}
-			else {
-				return resolve({ statusCode: res.statusCode, body: body });
-			}
-		})
-	})
-}
-
-e.put = (_api, _body) => {
-	var options = {
-		method: "PUT",
-		url: URL + _api,
-		strictSSL: false,
-		headers: {
-			'Content-Type': 'application/json',
-			"Authorization": "Bearer " + dataStack_token
-		},
-		json: true,
-		body: _body
-	}
-	return new Promise((resolve, reject) => {
-		req(options, function (err, res, body) {
-			if (err) {
-				return reject(err);
-			}
-			else {
-				return resolve({ statusCode: res.statusCode, body: body });
-			}
-		})
-	})
+	return response.body;
 }
 
 module.exports = e;
