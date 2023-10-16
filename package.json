@@ -18,13 +18,12 @@
   },
   "homepage": "https://github.com/appveen/data.stack-utils#readme",
   "dependencies": {
-    "bluebird": "^3.7.2",
+    "@azure/storage-blob": "^12.14.0",
+    "@google-cloud/storage": "^6.9.1",
+    "aws-sdk": "^2.1364.0",
+    "got": "^11.8.6",
     "lodash": "^4.17.21",
     "log4js": "^6.7.1",
-    "node-nats-streaming": "^0.3.2",
-    "request": "^2.88.2",
-    "@azure/storage-blob": "^12.14.0",
-    "aws-sdk": "^2.1364.0",
-    "@google-cloud/storage": "^6.9.1"
+    "node-nats-streaming": "^0.3.2"
   }
 }

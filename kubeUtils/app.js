@@ -1,8 +1,6 @@
 "use strict";
 
 const req = require("./requestHandler");
-const bluebird = require('bluebird');
-global.Promise = bluebird;
 let e = {};
 
 e.namespace = require("./namespace")
