@@ -33,7 +33,10 @@ let response = {
 e.get = async (url) => {
 	try {
 		await got.get(`${URL}${url}`, {
-			headers: headers
+			headers: headers,
+			https: {
+				rejectUnauthorized: false
+			},
 		}).json()
 			.then(data => response.body = data)
 	} catch (error) {
@@ -47,6 +50,9 @@ e.post = async (url, body) => {
 	try {
 		await got.post(`${URL}${url}`, {
 			headers: headers,
+			https: {
+				rejectUnauthorized: false
+			},
 			json: body
 		}).json()
 			.then(data => response.body = data)
@@ -77,6 +83,9 @@ e.put = async (url, body) => {
 	try {
 		await got.put(`${URL}${url}`, {
 			headers: headers,
+			https: {
+				rejectUnauthorized: false
+			},
 			json: body
 		}).json().then(data => response.body = data);
 	} catch (error) {
@@ -90,6 +99,9 @@ e.delete = async (url, body) => {
 	try {
 		await got.delete(`${URL}${url}`, {
 			headers: headers,
+			https: {
+				rejectUnauthorized: false
+			},
 			json: body
 		}).then(data => response.body = data.body);
 	} catch (error) {
