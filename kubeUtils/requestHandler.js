@@ -2,6 +2,7 @@
 
 var e = {};
 
+const https = require('https');
 const got = require('got');
 const axios = require('axios');
 const fs = require("fs");
@@ -26,6 +27,10 @@ const headers = {
 	"Authorization": "Bearer " + dataStack_token
 };
 
+const agent = new https.Agent({
+	rejectUnauthorized: false,
+  });
+
 // let response = {
 // 	statusCode: 200,
 // 	body: null
@@ -37,7 +42,8 @@ e.get = async (url) => {
 			url: `${URL}${url}`,
 			method: 'GET',
 			headers: headers,
-			responseType: 'json'
+			responseType: 'json',
+			httpsAgent: agent,
 			// throwHttpErrors: false,
 			// https: {
 			// 	rejectUnauthorized: false
@@ -57,6 +63,7 @@ e.post = async (url, body) => {
 			method: 'POST',
 			headers: headers,
 			responseType: 'json',
+			httpsAgent: agent,
 			// throwHttpErrors: false,z
 			data: body
 		});
@@ -74,11 +81,12 @@ e.patch = async (url, body) => {
 			method: 'PATCH',
 			responseType: 'json',
 			// throwHttpErrors: false,
-			// headers: {
-			// 	"Authorization": "Bearer " + dataStack_token,
-			// 	"Content-Type": "application/merge-patch+json"
-			// },
-			headers: headers,
+			httpsAgent: agent,
+			headers: {
+				"Authorization": "Bearer " + dataStack_token,
+				"Content-Type": "application/merge-patch+json"
+			},
+			// headers: headers,
 			data: body
 		});
 		return { statusCode: response.statusCode, body: response.body };
@@ -96,6 +104,7 @@ e.put = async (url, body) => {
 			headers: headers,
 			// throwHttpErrors: false,
 			responseType: 'json',
+			httpsAgent: agent,
 			// https: {
 			// 	rejectUnauthorized: false
 			// },
@@ -116,6 +125,7 @@ e.delete = async (url, body) => {
 			headers: headers,
 			// throwHttpErrors: false,
 			responseType: 'json',
+			httpsAgent: agent,
 			// https: {
 			// 	rejectUnauthorized: false
 			// },
