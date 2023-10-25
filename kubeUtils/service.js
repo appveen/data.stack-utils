@@ -4,6 +4,16 @@ const req = require("./requestHandler");
 
 const _baseURL = "/api/v1";
 
+let logger = global.logger;
+
+if (!logger) {
+	logger = {
+		info: console.log,
+		error: console.log,
+		debug: console.log
+	};
+}
+
 var e = {};
 
 e.getAllServices = () => {
@@ -19,6 +29,7 @@ e.getAllServices = () => {
 			}));
 			return res;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		});
 }
@@ -37,6 +48,7 @@ e.getAllServicesForNamespace = (_namespace) => {
 			}));
 			return res;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		});
 }
@@ -46,6 +58,7 @@ e.getService = (_namespace, _name) => {
 		.then(_d => {
 			return _d;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		});
 }
@@ -74,6 +87,7 @@ e.createService = (_namespace, _name, _port, _release) => {
 		.then(_d => {
 			return _d;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		});
 }
@@ -84,6 +98,7 @@ e.deleteService = (_namespace, _name) => {
 		.then(_d => {
 			return _d;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		});
 }

@@ -5,6 +5,16 @@ var e = {};
 const got = require('got');
 const fs = require("fs");
 
+let logger = global.logger;
+
+if (!logger) {
+	logger = {
+		info: console.log,
+		error: console.log,
+		debug: console.log
+	};
+}
+
 const URL = "https://kubernetes.default.svc";
 
 var dataStack_token = "";
@@ -27,6 +37,7 @@ e.get = async (url) => {
 		}).json()
 			.then(data => response.body = data)
 	} catch (error) {
+		logger.error(error);
 		response.statusCode = 400;
 	}
 	return response;
@@ -40,6 +51,7 @@ e.post = async (url, body) => {
 		}).json()
 			.then(data => response.body = data)
 	} catch (error) {
+		logger.error(error);
 		response.statusCode = 400;
 	}
 	return response;
@@ -55,6 +67,7 @@ e.patch = async (url, body) => {
 			json: body
 		}).then(data => response.body = data.body);
 	} catch (error) {
+		logger.error(error);
 		response.statusCode = 400;
 	}
 	return response;
@@ -67,6 +80,7 @@ e.put = async (url, body) => {
 			json: body
 		}).json().then(data => response.body = data);
 	} catch (error) {
+		logger.error(error);
 		response.statusCode = 400;
 	}
 	return response.body;
@@ -79,6 +93,7 @@ e.delete = async (url, body) => {
 			json: body
 		}).then(data => response.body = data.body);
 	} catch (error) {
+		logger.error(error);
 		response.statusCode = 400;
 	}
 	return response.body;

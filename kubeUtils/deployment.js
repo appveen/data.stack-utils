@@ -4,6 +4,16 @@ const req = require("./requestHandler");
 
 const _baseURL = "/apis/apps/v1";
 
+let logger = global.logger;
+
+if (!logger) {
+	logger = {
+		info: console.log,
+		error: console.log,
+		debug: console.log
+	};
+}
+
 var e = {};
 
 e.getAllDeployments = () => {
@@ -19,6 +29,7 @@ e.getAllDeployments = () => {
 			}));
 			return res;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		});
 }
@@ -36,6 +47,7 @@ e.getAllDeploymentsForNamespace = (_namespace) => {
 			}));
 			return res;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		});
 }
@@ -124,6 +136,7 @@ e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options, _rel
 		.then(_d => {
 			return _d;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		});
 }
@@ -190,6 +203,7 @@ e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options, _vol
 		.then(_d => {
 			return _d;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		});
 }
@@ -200,6 +214,7 @@ e.deleteDeployment = (_namespace, _name) => {
 		.then(_d => {
 			return _d;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		});
 }
@@ -220,6 +235,7 @@ e.scaleDeployment = (ns, name, scale) => {
 		.then(_d => {
 			return _d;
 		}, _e => {
+			logger.error(_e);
 			return _e;
 		})
 }
