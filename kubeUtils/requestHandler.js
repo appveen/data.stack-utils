@@ -3,6 +3,7 @@
 var e = {};
 
 const got = require('got');
+const axios = require('axios');
 const fs = require("fs");
 
 let logger = global.logger;
@@ -32,13 +33,15 @@ const headers = {
 
 e.get = async (url) => {
 	try {
-		let response = await got.get(`${URL}${url}`, {
+		let response = await axios({
+			url: `${URL}${url}`,
+			method: 'GET',
 			headers: headers,
-			throwHttpErrors: false,
-			responseType: 'json',
-			https: {
-				rejectUnauthorized: false
-			},
+			responseType: 'json'
+			// throwHttpErrors: false,
+			// https: {
+			// 	rejectUnauthorized: false
+			// },
 		});
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
@@ -49,14 +52,13 @@ e.get = async (url) => {
 
 e.post = async (url, body) => {
 	try {
-		let response = await got.post(`${URL}${url}`, {
+		let response = await axios({
+			url: `${URL}${url}`,
+			method: 'POST',
 			headers: headers,
-			throwHttpErrors: false,
 			responseType: 'json',
-			https: {
-				rejectUnauthorized: false
-			},
-			json: body
+			// throwHttpErrors: false,z
+			data: body
 		});
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
@@ -67,15 +69,17 @@ e.post = async (url, body) => {
 
 e.patch = async (url, body) => {
 	try {
-		let response = await got.patch(`${URL}${url}`, {
-			throwHttpErrors: false,
+		let response = await axios({
+			url: `${URL}${url}`,
+			method: 'PATCH',
 			responseType: 'json',
-			headers: {
-				"Authorization": "Bearer " + dataStack_token,
-				"Content-Type": "application/merge-patch+json"
-			},
+			// throwHttpErrors: false,
+			// headers: {
+			// 	"Authorization": "Bearer " + dataStack_token,
+			// 	"Content-Type": "application/merge-patch+json"
+			// },
 			headers: headers,
-			json: body
+			data: body
 		});
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
@@ -86,14 +90,16 @@ e.patch = async (url, body) => {
 
 e.put = async (url, body) => {
 	try {
-		let response = await got.put(`${URL}${url}`, {
+		let response = await axios({
+			url: `${URL}${url}`,
+			method: 'PUT',
 			headers: headers,
-			throwHttpErrors: false,
+			// throwHttpErrors: false,
 			responseType: 'json',
-			https: {
-				rejectUnauthorized: false
-			},
-			json: body
+			// https: {
+			// 	rejectUnauthorized: false
+			// },
+			data: body
 		});
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
@@ -104,14 +110,16 @@ e.put = async (url, body) => {
 
 e.delete = async (url, body) => {
 	try {
-		let response = await got.delete(`${URL}${url}`, {
+		let response = await axios({
+			url: `${URL}${url}`,
+			method: 'DELETE',
 			headers: headers,
-			throwHttpErrors: false,
+			// throwHttpErrors: false,
 			responseType: 'json',
-			https: {
-				rejectUnauthorized: false
-			},
-			json: body
+			// https: {
+			// 	rejectUnauthorized: false
+			// },
+			data: body
 		});
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
