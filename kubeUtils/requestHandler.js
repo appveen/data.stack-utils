@@ -40,7 +40,7 @@ e.get = async (url) => {
 				rejectUnauthorized: false
 			},
 		});
-		return response;
+		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
 		logger.error(error);
 		return error;
@@ -58,7 +58,7 @@ e.post = async (url, body) => {
 			},
 			json: body
 		});
-		return response;
+		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
 		logger.error(error);
 		return error;
@@ -77,7 +77,7 @@ e.patch = async (url, body) => {
 			headers: headers,
 			json: body
 		});
-		return response;
+		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
 		logger.error(error);
 		return error;
@@ -95,7 +95,7 @@ e.put = async (url, body) => {
 			},
 			json: body
 		});
-		return response;
+		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
 		logger.error(error);
 		return error;
@@ -113,7 +113,7 @@ e.delete = async (url, body) => {
 			},
 			json: body
 		});
-		return response;
+		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
 		logger.error(error);
 		return error;
