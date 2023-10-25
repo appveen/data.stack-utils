@@ -34,6 +34,8 @@ e.get = async (url) => {
 	try {
 		let response = await got.get(`${URL}${url}`, {
 			headers: headers,
+			throwHttpErrors: false,
+			responseType: 'json',
 			https: {
 				rejectUnauthorized: false
 			},
@@ -49,6 +51,8 @@ e.post = async (url, body) => {
 	try {
 		let response = await got.post(`${URL}${url}`, {
 			headers: headers,
+			throwHttpErrors: false,
+			responseType: 'json',
 			https: {
 				rejectUnauthorized: false
 			},
@@ -64,10 +68,13 @@ e.post = async (url, body) => {
 e.patch = async (url, body) => {
 	try {
 		let response = await got.patch(`${URL}${url}`, {
+			throwHttpErrors: false,
+			responseType: 'json',
 			headers: {
 				"Authorization": "Bearer " + dataStack_token,
 				"Content-Type": "application/merge-patch+json"
 			},
+			headers: headers,
 			json: body
 		});
 		return response;
@@ -81,6 +88,8 @@ e.put = async (url, body) => {
 	try {
 		let response = await got.put(`${URL}${url}`, {
 			headers: headers,
+			throwHttpErrors: false,
+			responseType: 'json',
 			https: {
 				rejectUnauthorized: false
 			},
@@ -97,6 +106,8 @@ e.delete = async (url, body) => {
 	try {
 		let response = await got.delete(`${URL}${url}`, {
 			headers: headers,
+			throwHttpErrors: false,
+			responseType: 'json',
 			https: {
 				rejectUnauthorized: false
 			},
