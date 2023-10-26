@@ -91,7 +91,7 @@ e.createService = (_namespace, _name, _port, _release) => {
 		}
 	};
 	logger.trace(`KubeUtils :: creating service :: service name :: ${_name} :: namespace :: ${_namespace} :: data :: ${JSON.stringify(data)}`);
-	return req.post("/api/v1/namespaces/" + _namespace + "/services", data)
+	return req.post(_baseURL + "/namespaces/" + _namespace + "/services", data)
 		.then(_d => {
 			logger.trace(`KubeUtils :: creating service :: service name :: ${_name} :: namespace :: ${_namespace} :: response :: ${JSON.stringify(_d)}`);
 			return _d;
