@@ -68,7 +68,7 @@ e.post = async (url, body) => {
 			url: `${URL}${url}`,
 			method: 'POST',
 			headers: headers,
-			responseType: 'json',
+			// responseType: 'json',
 			httpsAgent: agent,
 			// validateStatus: function (status) {
 			// 	return true;
