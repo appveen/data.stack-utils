@@ -230,7 +230,7 @@ e.deleteDeployment = (_namespace, _name) => {
 	var data = {};
 	return req.delete(_baseURL + "/namespaces/" + _namespace + "/deployments/" + _name, data)
 		.then(_d => {
-			logger.trace(`KubeUtils :: delete deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: response :: ${_d}`);
+			logger.trace(`KubeUtils :: delete deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: response :: ${JSON.stringify(_d)}`);
 			return _d;
 		}, _e => {
 			logger.error(`KubeUtils :: delete deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: error :: ${JSON.stringify(_e)}`);
