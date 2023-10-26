@@ -38,6 +38,7 @@ const agent = new https.Agent({
 
 e.get = async (url) => {
 	try {
+		logger.debug(`Kubeutils :: Request Handler :: GET :: URL :: ${url}`);
 		let response = await axios({
 			url: `${URL}${url}`,
 			method: 'GET',
@@ -49,15 +50,17 @@ e.get = async (url) => {
 			// 	rejectUnauthorized: false
 			// },
 		});
+		logger.debug(`Kubeutils :: Request Handler :: GET :: Response :: ${JSON.stringify(response)}`);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
-		logger.error(error);
+		logger.debug(`Kubeutils :: Request Handler :: GET :: Error :: ${JSON.stringify(error)}`);
 		return error;
 	}
 };
 
 e.post = async (url, body) => {
 	try {
+		logger.debug(`Kubeutils :: Request Handler :: POST :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
 		let response = await axios({
 			url: `${URL}${url}`,
 			method: 'POST',
@@ -67,15 +70,17 @@ e.post = async (url, body) => {
 			// throwHttpErrors: false,z
 			data: body
 		});
+		logger.debug(`Kubeutils :: Request Handler :: POST :: Response :: ${JSON.stringify(response)}`);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
-		logger.error(error);
+		logger.debug(`Kubeutils :: Request Handler :: POST :: Error :: ${JSON.stringify(error)}`);
 		return error;
 	}
 }
 
 e.patch = async (url, body) => {
 	try {
+		logger.debug(`Kubeutils :: Request Handler :: PATCH :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
 		let response = await axios({
 			url: `${URL}${url}`,
 			method: 'PATCH',
@@ -89,15 +94,17 @@ e.patch = async (url, body) => {
 			// headers: headers,
 			data: body
 		});
+		logger.debug(`Kubeutils :: Request Handler :: PATCH :: Response :: ${JSON.stringify(response)}`);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
-		logger.error(error);
+		logger.debug(`Kubeutils :: Request Handler :: PATCH :: Error :: ${JSON.stringify(error)}`);
 		return error;
 	}
 }
 
 e.put = async (url, body) => {
 	try {
+		logger.debug(`Kubeutils :: Request Handler :: PUT :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
 		let response = await axios({
 			url: `${URL}${url}`,
 			method: 'PUT',
@@ -110,15 +117,17 @@ e.put = async (url, body) => {
 			// },
 			data: body
 		});
+		logger.debug(`Kubeutils :: Request Handler :: PUT :: Response :: ${JSON.stringify(response)}`);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
-		logger.error(error);
+		logger.debug(`Kubeutils :: Request Handler :: PUT :: Error :: ${JSON.stringify(error)}`);
 		return error;
 	}
 }
 
 e.delete = async (url, body) => {
 	try {
+		logger.debug(`Kubeutils :: Request Handler :: DELETE :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
 		let response = await axios({
 			url: `${URL}${url}`,
 			method: 'DELETE',
@@ -131,9 +140,10 @@ e.delete = async (url, body) => {
 			// },
 			data: body
 		});
+		logger.debug(`Kubeutils :: Request Handler :: DELETE :: Response :: ${JSON.stringify(response)}`);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
-		logger.error(error);
+		logger.debug(`Kubeutils :: Request Handler :: DELETE :: Error :: ${JSON.stringify(error)}`);
 		return error;
 	}
 }
