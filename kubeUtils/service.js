@@ -2,7 +2,7 @@
 
 const req = require("./requestHandler");
 
-const _baseURL = "/apis/apps/v1";
+const _baseURL = "/api/v1";
 
 let logger = global.logger;
 
