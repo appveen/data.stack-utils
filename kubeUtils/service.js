@@ -106,7 +106,7 @@ e.deleteService = (_namespace, _name) => {
 	var data = {};
 	return req.delete(_baseURL + "/namespaces/" + _namespace + "/services/" + _name, data)
 		.then(_d => {
-			logger.trace(`KubeUtils :: delete service :: service name :: ${_name} :: namespace :: ${_namespace} :: response :: ${_d}`);
+			logger.trace(`KubeUtils :: delete service :: service name :: ${_name} :: namespace :: ${_namespace} :: response :: ${JSON.stringify(_d)}`);
 			return _d;
 		}, _e => {
 			logger.error(`KubeUtils :: delete service :: service name :: ${_name} :: namespace :: ${_namespace} :: error :: ${JSON.stringify(_e)}`);
