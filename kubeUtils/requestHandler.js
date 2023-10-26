@@ -45,9 +45,9 @@ e.get = async (url) => {
 			headers: headers,
 			responseType: 'json',
 			httpsAgent: agent,
-			validateStatus: function (status) {
-				return true;
-			},
+			// validateStatus: function (status) {
+			// 	return true;
+			// },
 			// throwHttpErrors: false,
 			// https: {
 			// 	rejectUnauthorized: false
@@ -70,9 +70,9 @@ e.post = async (url, body) => {
 			headers: headers,
 			responseType: 'json',
 			httpsAgent: agent,
-			validateStatus: function (status) {
-				return true;
-			},
+			// validateStatus: function (status) {
+			// 	return true;
+			// },
 			// throwHttpErrors: false,z
 			data: body
 		});
@@ -93,9 +93,9 @@ e.patch = async (url, body) => {
 			responseType: 'json',
 			// throwHttpErrors: false,
 			httpsAgent: agent,
-			validateStatus: function (status) {
-				return true;
-			},
+			// validateStatus: function (status) {
+			// 	return true;
+			// },
 			headers: {
 				"Authorization": "Bearer " + dataStack_token,
 				"Content-Type": "application/merge-patch+json"
@@ -121,9 +121,9 @@ e.put = async (url, body) => {
 			// throwHttpErrors: false,
 			responseType: 'json',
 			httpsAgent: agent,
-			validateStatus: function (status) {
-				return true;
-			},
+			// validateStatus: function (status) {
+			// 	return true;
+			// },
 			// https: {
 			// 	rejectUnauthorized: false
 			// },
@@ -147,9 +147,9 @@ e.delete = async (url, body) => {
 			// throwHttpErrors: false,
 			responseType: 'json',
 			httpsAgent: agent,
-			validateStatus: function (status) {
-				return true;
-			},
+			// validateStatus: function (status) {
+			// 	return true;
+			// },
 			// https: {
 			// 	rejectUnauthorized: false
 			// },
