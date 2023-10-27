@@ -39,11 +39,12 @@ const agent = new https.Agent({
 e.get = async (url) => {
 	try {
 		logger.debug(`Kubeutils :: Request Handler :: GET :: URL :: ${url}`);
+		let api = `${URL}${url}`;
 		let response = await axios({
-			url: `${URL}${url}`,
+			url: api,
 			method: 'GET',
 			headers: headers,
-			responseType: 'json',
+			// responseType: 'json',
 			httpsAgent: agent,
 			// validateStatus: function (status) {
 			// 	return true;
@@ -64,8 +65,9 @@ e.get = async (url) => {
 e.post = async (url, body) => {
 	try {
 		logger.debug(`Kubeutils :: Request Handler :: POST :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+		let api = `${URL}${url}`;
 		let response = await axios({
-			url: `${URL}${url}`,
+			url: api,
 			method: 'POST',
 			headers: headers,
 			// responseType: 'json',
@@ -87,10 +89,11 @@ e.post = async (url, body) => {
 e.patch = async (url, body) => {
 	try {
 		logger.debug(`Kubeutils :: Request Handler :: PATCH :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+		let api = `${URL}${url}`;
 		let response = await axios({
-			url: `${URL}${url}`,
+			url: api,
 			method: 'PATCH',
-			responseType: 'json',
+			// responseType: 'json',
 			// throwHttpErrors: false,
 			httpsAgent: agent,
 			// validateStatus: function (status) {
@@ -114,12 +117,13 @@ e.patch = async (url, body) => {
 e.put = async (url, body) => {
 	try {
 		logger.debug(`Kubeutils :: Request Handler :: PUT :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+		let api = `${URL}${url}`;
 		let response = await axios({
-			url: `${URL}${url}`,
+			url: api,
 			method: 'PUT',
 			headers: headers,
 			// throwHttpErrors: false,
-			responseType: 'json',
+			// responseType: 'json',
 			httpsAgent: agent,
 			// validateStatus: function (status) {
 			// 	return true;
@@ -140,12 +144,13 @@ e.put = async (url, body) => {
 e.delete = async (url, body) => {
 	try {
 		logger.debug(`Kubeutils :: Request Handler :: DELETE :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+		let api = `${URL}${url}`;
 		let response = await axios({
-			url: `${URL}${url}`,
+			url: api,
 			method: 'DELETE',
 			headers: headers,
 			// throwHttpErrors: false,
-			responseType: 'json',
+			// responseType: 'json',
 			httpsAgent: agent,
 			// validateStatus: function (status) {
 			// 	return true;
