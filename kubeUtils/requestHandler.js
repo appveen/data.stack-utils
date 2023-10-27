@@ -57,7 +57,7 @@ e.get = async (url) => {
 		logger.debug(`Kubeutils :: Request Handler :: GET :: Response :: ${JSON.stringify(response)}`);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
-		logger.debug(`Kubeutils :: Request Handler :: GET :: Error :: ${JSON.stringify(error)}`);
+		logger.error(`Kubeutils :: Request Handler :: GET :: Error :: ${JSON.stringify(error)}`);
 		return error;
 	}
 };
@@ -81,7 +81,8 @@ e.post = async (url, body) => {
 		logger.debug(`Kubeutils :: Request Handler :: POST :: Response :: ${JSON.stringify(response)}`);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
-		logger.debug(`Kubeutils :: Request Handler :: POST :: Error :: ${JSON.stringify(error)}`);
+		logger.error(`Kubeutils :: Request Handler :: POST :: Error :: ${JSON.stringify(error)}`);
+		logger.error(error);
 		return error;
 	}
 }
@@ -109,7 +110,7 @@ e.patch = async (url, body) => {
 		logger.debug(`Kubeutils :: Request Handler :: PATCH :: Response :: ${JSON.stringify(response)}`);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
-		logger.debug(`Kubeutils :: Request Handler :: PATCH :: Error :: ${JSON.stringify(error)}`);
+		logger.error(`Kubeutils :: Request Handler :: PATCH :: Error :: ${JSON.stringify(error)}`);
 		return error;
 	}
 }
@@ -136,7 +137,7 @@ e.put = async (url, body) => {
 		logger.debug(`Kubeutils :: Request Handler :: PUT :: Response :: ${JSON.stringify(response)}`);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
-		logger.debug(`Kubeutils :: Request Handler :: PUT :: Error :: ${JSON.stringify(error)}`);
+		logger.error(`Kubeutils :: Request Handler :: PUT :: Error :: ${JSON.stringify(error)}`);
 		return error;
 	}
 }
@@ -163,7 +164,7 @@ e.delete = async (url, body) => {
 		logger.debug(`Kubeutils :: Request Handler :: DELETE :: Response :: ${JSON.stringify(response)}`);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
-		logger.debug(`Kubeutils :: Request Handler :: DELETE :: Error :: ${JSON.stringify(error)}`);
+		logger.error(`Kubeutils :: Request Handler :: DELETE :: Error :: ${JSON.stringify(error)}`);
 		return error;
 	}
 }
