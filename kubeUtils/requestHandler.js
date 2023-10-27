@@ -10,7 +10,8 @@ if (!logger) {
 	logger = {
 		info: console.log,
 		error: console.log,
-		debug: console.log
+		debug: console.log,
+		trace: console.log
 	};
 }
 
