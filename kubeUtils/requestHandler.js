@@ -78,7 +78,8 @@ e.post = async (url, body) => {
 			// throwHttpErrors: false,z
 			data: body
 		});
-		logger.debug(`Kubeutils :: Request Handler :: POST :: Response :: ${JSON.stringify(response)}`);
+		logger.debug(`Kubeutils :: Request Handler :: POST :: Response`);
+		logger.debug(response);
 		return { statusCode: response.statusCode, body: response.body };
 	} catch (error) {
 		logger.error(`Kubeutils :: Request Handler :: POST :: Error :: ${JSON.stringify(error)}`);
