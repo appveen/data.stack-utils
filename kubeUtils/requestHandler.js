@@ -1,14 +1,11 @@
 "use strict"
 
-var e = {};
-
-const https = require('https');
-const got = require('got');
-const axios = require('axios');
 const fs = require("fs");
+const https = require('https');
+const axios = require('axios');
+
 
 let logger = global.logger;
-
 if (!logger) {
 	logger = {
 		info: console.log,
@@ -16,6 +13,7 @@ if (!logger) {
 		debug: console.log
 	};
 }
+
 
 const URL = "https://kubernetes.default.svc";
 
@@ -27,147 +25,145 @@ const headers = {
 	"Authorization": "Bearer " + dataStack_token
 };
 
+
 const agent = new https.Agent({
 	rejectUnauthorized: false,
 });
 
-// let response = {
-// 	statusCode: 200,
-// 	body: null
-// };
+
+var e = {};
+
 
 e.get = async (url) => {
 	try {
-		logger.debug(`Kubeutils :: Request Handler :: GET :: URL :: ${url}`);
+		logger.trace(`Kubeutils :: Request Handler :: GET :: URL :: ${url}`);
+
 		let api = `${URL}${url}`;
 		let response = await axios({
 			url: api,
 			method: 'GET',
 			headers: headers,
-			// responseType: 'json',
-			httpsAgent: agent,
-			// validateStatus: function (status) {
-			// 	return true;
-			// },
-			// throwHttpErrors: false,
-			// https: {
-			// 	rejectUnauthorized: false
-			// },
+			httpsAgent: agent
 		});
-		logger.debug(`Kubeutils :: Request Handler :: GET :: Response :: ${JSON.stringify(response)}`);
+
+		logger.trace(`Kubeutils :: Request Handler :: GET :: Response`);
+		logger.trace(response);
+		
 		return { statusCode: response.statusCode || response.status, body: response.body || response.data };
 	} catch (error) {
-		logger.error(`Kubeutils :: Request Handler :: GET :: Error :: ${JSON.stringify(error)}`);
+		logger.error(`Kubeutils :: Request Handler :: GET :: Error`);
+		logger.error(error);
+
 		return error;
 	}
 };
 
+
 e.post = async (url, body) => {
 	try {
-		logger.debug(`Kubeutils :: Request Handler :: POST :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+		logger.trace(`Kubeutils :: Request Handler :: POST :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+		
 		let api = `${URL}${url}`;
 		let response = await axios({
 			url: api,
 			method: 'POST',
 			headers: headers,
-			// responseType: 'json',
 			httpsAgent: agent,
-			// validateStatus: function (status) {
-			// 	return true;
-			// },
-			// throwHttpErrors: false,z
 			data: body
 		});
-		logger.debug(`Kubeutils :: Request Handler :: POST :: Response`);
-		logger.debug(response);
+
+		logger.trace(`Kubeutils :: Request Handler :: POST :: Response`);
+		logger.trace(response);
+
 		return { statusCode: response.statusCode || response.status, body: response.body || response.data };
 	} catch (error) {
-		logger.error(`Kubeutils :: Request Handler :: POST :: Error :: ${JSON.stringify(error)}`);
+		logger.error(`Kubeutils :: Request Handler :: POST :: Error`);
 		logger.error(error);
+
 		return error;
 	}
 }
 
+
 e.patch = async (url, body) => {
 	try {
-		logger.debug(`Kubeutils :: Request Handler :: PATCH :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+		logger.trace(`Kubeutils :: Request Handler :: PATCH :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+
 		let api = `${URL}${url}`;
 		let response = await axios({
 			url: api,
 			method: 'PATCH',
-			// responseType: 'json',
-			// throwHttpErrors: false,
 			httpsAgent: agent,
-			// validateStatus: function (status) {
-			// 	return true;
-			// },
 			headers: {
 				"Authorization": "Bearer " + dataStack_token,
 				"Content-Type": "application/merge-patch+json"
 			},
-			// headers: headers,
 			data: body
 		});
-		logger.debug(`Kubeutils :: Request Handler :: PATCH :: Response :: ${JSON.stringify(response)}`);
+
+		logger.trace(`Kubeutils :: Request Handler :: PATCH :: Response`);
+		logger.trace(response);
+
 		return { statusCode: response.statusCode || response.status, body: response.body || response.data };
 	} catch (error) {
-		logger.error(`Kubeutils :: Request Handler :: PATCH :: Error :: ${JSON.stringify(error)}`);
+		logger.error(`Kubeutils :: Request Handler :: PATCH :: Error`);
+		logger.error(error);
+
 		return error;
 	}
 }
 
+
 e.put = async (url, body) => {
 	try {
-		logger.debug(`Kubeutils :: Request Handler :: PUT :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+		logger.trace(`Kubeutils :: Request Handler :: PUT :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+
 		let api = `${URL}${url}`;
 		let response = await axios({
 			url: api,
 			method: 'PUT',
 			headers: headers,
-			// throwHttpErrors: false,
-			// responseType: 'json',
 			httpsAgent: agent,
-			// validateStatus: function (status) {
-			// 	return true;
-			// },
-			// https: {
-			// 	rejectUnauthorized: false
-			// },
 			data: body
 		});
-		logger.debug(`Kubeutils :: Request Handler :: PUT :: Response :: ${JSON.stringify(response)}`);
+
+		logger.trace(`Kubeutils :: Request Handler :: PUT :: Response`);
+		logger.trace(response);
+
 		return { statusCode: response.statusCode || response.status, body: response.body || response.data };
 	} catch (error) {
-		logger.error(`Kubeutils :: Request Handler :: PUT :: Error :: ${JSON.stringify(error)}`);
+		logger.error(`Kubeutils :: Request Handler :: PUT :: Error`);
+		logger.error(error);
+
 		return error;
 	}
 }
 
+
 e.delete = async (url, body) => {
 	try {
-		logger.debug(`Kubeutils :: Request Handler :: DELETE :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+		logger.trace(`Kubeutils :: Request Handler :: DELETE :: URL :: ${url} :: Body :: ${JSON.stringify(body)}`);
+
 		let api = `${URL}${url}`;
 		let response = await axios({
 			url: api,
 			method: 'DELETE',
 			headers: headers,
-			// throwHttpErrors: false,
-			// responseType: 'json',
 			httpsAgent: agent,
-			// validateStatus: function (status) {
-			// 	return true;
-			// },
-			// https: {
-			// 	rejectUnauthorized: false
-			// },
 			data: body
 		});
-		logger.debug(`Kubeutils :: Request Handler :: DELETE :: Response :: ${JSON.stringify(response)}`);
+		
+		logger.trace(`Kubeutils :: Request Handler :: DELETE :: Response`);
+		logger.trace(response);
+
 		return { statusCode: response.statusCode || response.status, body: response.body || response.data };
 	} catch (error) {
-		logger.error(`Kubeutils :: Request Handler :: DELETE :: Error :: ${JSON.stringify(error)}`);
+		logger.error(`Kubeutils :: Request Handler :: DELETE :: Error`);
+		logger.error(error);
+
 		return error;
 	}
 }
+
 
 module.exports = e;

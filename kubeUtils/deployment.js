@@ -2,10 +2,8 @@
 
 const req = require("./requestHandler");
 
-const _baseURL = "/apis/apps/v1";
 
 let logger = global.logger;
-
 if (!logger) {
 	logger = {
 		info: console.log,
@@ -14,13 +12,17 @@ if (!logger) {
 	};
 }
 
+const _baseURL = "/apis/apps/v1";
 var e = {};
 
+
 e.getAllDeployments = () => {
-	logger.debug('KubeUtils :: fetching all deployments');
+	logger.debug('KubeUtils :: Fetching All Deployments');
+
 	return req.get(_baseURL + "/deployments")
 		.then(_d => {
-			logger.trace(`KubeUtils :: fetching all deployments :: response :: ${JSON.stringify(_d)}`);
+			logger.trace(`KubeUtils :: Fetching All Deployments :: Response :: ${JSON.stringify(_d)}`);
+
 			if (!(_d.statusCode >= 200 && _d.statusCode < 400)) throw new Error(_d.body && typeof _d.body === 'object' ? JSON.stringify(_d.body) : 'API returned ' + _d.statusCode)
 			var data = _d.body;
 			var res = []
@@ -29,18 +31,22 @@ e.getAllDeployments = () => {
 				namespace: _i.metadata.namespace,
 				status: _i.status.conditions[0].type
 			}));
+
 			return res;
 		}, _e => {
-			logger.error(`KubeUtils :: fetching all deployments :: error :: ${JSON.stringify(_e)}`);
+			logger.error(`KubeUtils :: Fetching All Deployments :: Error :: ${JSON.stringify(_e)}`);
 			return _e;
 		});
 }
+
 
 e.getAllDeploymentsForNamespace = (_namespace) => {
-	logger.debug(`KubeUtils :: fetching all deployments for namespace :: ${_namespace}`);
+	logger.debug(`KubeUtils :: Fetching All Deployments for Namespace :: ${_namespace}`);
+
 	return req.get(_baseURL + "/namespaces/" + _namespace + "/deployments")
 		.then(_d => {
-			logger.trace(`KubeUtils :: fetching all deployments for namespace :: ${_namespace} :: response :: ${JSON.stringify(_d)}`);
+			logger.trace(`KubeUtils :: Fetching All Deployments for Namespace :: ${_namespace} :: Response :: ${JSON.stringify(_d)}`);
+
 			if (!(_d.statusCode >= 200 && _d.statusCode < 400)) throw new Error(_d.body && typeof _d.body === 'object' ? JSON.stringify(_d.body) : 'API returned ' + _d.statusCode)
 			var data = _d.body;
 			var res = []
@@ -49,27 +55,32 @@ e.getAllDeploymentsForNamespace = (_namespace) => {
 				namespace: _i.metadata.namespace,
 				status: _i.status.conditions[0].type
 			}));
+
 			return res;
 		}, _e => {
-			logger.error(`KubeUtils :: fetching all deployments for namespace :: ${_namespace} :: error :: ${JSON.stringify(_e)}`);
+			logger.error(`KubeUtils :: Fetching All Deployments for Namespace :: ${_namespace} :: Error :: ${JSON.stringify(_e)}`);
 			return _e;
 		});
 }
+
 
 e.getDeployment = (_namespace, _name) => {
-	logger.debug(`KubeUtils :: fetching deployment :: deployment name :: ${_name} :: namespace :: ${_namespace}`);
+	logger.debug(`KubeUtils :: Fetching Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace}`);
+
 	return req.get(_baseURL + "/namespaces/" + _namespace + "/deployments/" + _name)
 		.then(_d => {
-			logger.trace(`KubeUtils :: fetching deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: response :: ${JSON.stringify(_d)}`);
+			logger.trace(`KubeUtils :: Fetching Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Response :: ${JSON.stringify(_d)}`);
 			return _d;
 		}, _e => {
-			logger.error(`KubeUtils :: fetching deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: error :: ${JSON.stringify(_e)}`);
+			logger.error(`KubeUtils :: Fetching Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Error :: ${JSON.stringify(_e)}`);
 			return _e;
 		});
 }
 
+
 e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options, _release, _volumeMounts, _envFrom) => {
-	logger.debug(`KubeUtils :: creating deployment :: deployment name :: ${_name} :: namespace :: ${_namespace}`);
+	logger.debug(`KubeUtils :: Creating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace}`);
+
 	var data = {
 		"metadata": {
 			"name": _name,
@@ -143,20 +154,22 @@ e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options, _rel
 		});
 	}
 
-	logger.trace(`KubeUtils :: creating deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: data :: ${JSON.stringify(data)}`);
+	logger.trace(`KubeUtils :: Creating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Request Data :: ${JSON.stringify(data)}`);
 
 	return req.post(_baseURL + "/namespaces/" + _namespace + "/deployments", data)
 		.then(_d => {
-			logger.trace(`KubeUtils :: creating deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: response :: ${JSON.stringify(_d)}`);
+			logger.trace(`KubeUtils :: Creating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Response :: ${JSON.stringify(_d)}`);
 			return _d;
 		}, _e => {
-			logger.error(`KubeUtils :: creating deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: error :: ${JSON.stringify(_e)}`);
+			logger.error(`KubeUtils :: Creating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Error :: ${JSON.stringify(_e)}`);
 			return _e;
 		});
 }
 
+
 e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options, _volumeMounts, _envFrom) => {
-	logger.debug(`KubeUtils :: updating deployment :: deployment name :: ${_name} :: namespace :: ${_namespace}`);
+	logger.debug(`KubeUtils :: Updating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace}`);
+
 	var data = {
 		"spec": {
 			"template": {
@@ -214,32 +227,36 @@ e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options, _vol
 			}
 		});
 	}
-	logger.trace(`KubeUtils :: updating deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: data :: ${JSON.stringify(_d)}`);
+	logger.trace(`KubeUtils :: Updating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Request Data :: ${JSON.stringify(_d)}`);
 	return req.patch(_baseURL + "/namespaces/" + _namespace + "/deployments/" + _name, data)
 		.then(_d => {
-			logger.trace(`KubeUtils :: updating deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: response :: ${JSON.stringify(_d)}`);
+			logger.trace(`KubeUtils :: Updating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Response :: ${JSON.stringify(_d)}`);
 			return _d;
 		}, _e => {
-			logger.error(`KubeUtils :: updating deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: error :: ${JSON.stringify(_e)}`);
+			logger.error(`KubeUtils :: Updating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Error :: ${JSON.stringify(_e)}`);
 			return _e;
 		});
 }
 
+
 e.deleteDeployment = (_namespace, _name) => {
-	logger.debug(`KubeUtils :: delete deployment :: deployment name :: ${_name} :: namespace :: ${_namespace}`);
+	logger.debug(`KubeUtils :: Delete Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace}`);
+
 	var data = {};
 	return req.delete(_baseURL + "/namespaces/" + _namespace + "/deployments/" + _name, data)
 		.then(_d => {
-			logger.trace(`KubeUtils :: delete deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: response :: ${JSON.stringify(_d)}`);
+			logger.trace(`KubeUtils :: Delete Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Response :: ${JSON.stringify(_d)}`);
 			return _d;
 		}, _e => {
-			logger.error(`KubeUtils :: delete deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: error :: ${JSON.stringify(_e)}`);
+			logger.error(`KubeUtils :: Delete Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Error :: ${JSON.stringify(_e)}`);
 			return _e;
 		});
 }
 
+
 e.scaleDeployment = (ns, name, scale) => {
-	logger.debug(`KubeUtils :: scale deployment :: deployment name :: ${name} :: namespace :: ${ns}`);
+	logger.debug(`KubeUtils :: Scale Deployment :: Deployment Name :: ${name} :: Namespace :: ${ns}`);
+
 	let payload = {
 		"kind": "Scale",
 		"apiVersion": "autoscaling/v1",
@@ -251,14 +268,16 @@ e.scaleDeployment = (ns, name, scale) => {
 			"replicas": scale
 		}
 	};
+	
 	return req.put(_baseURL + "/namespaces/" + ns + "/deployments/" + name + "/scale", payload)
 		.then(_d => {
-			logger.trace(`KubeUtils :: scale deployment :: deployment name :: ${name} :: namespace :: ${ns} :: response :: ${JSON.stringify(_d)}`);
+			logger.trace(`KubeUtils :: Scale Deployment :: Deployment Name :: ${name} :: Namespace :: ${ns} :: Response :: ${JSON.stringify(_d)}`);
 			return _d;
 		}, _e => {
-			logger.error(`KubeUtils :: scale deployment :: deployment name :: ${_name} :: namespace :: ${_namespace} :: error :: ${JSON.stringify(_e)}`);
+			logger.error(`KubeUtils :: Scale Deployment :: Deployment Name :: ${name} :: Namespace :: ${ns} :: Error :: ${JSON.stringify(_e)}`);
 			return _e;
 		})
 }
+
 
 module.exports = e;
