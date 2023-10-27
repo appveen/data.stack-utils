@@ -55,7 +55,7 @@ e.get = async (url) => {
 			// },
 		});
 		logger.debug(`Kubeutils :: Request Handler :: GET :: Response :: ${JSON.stringify(response)}`);
-		return { statusCode: response.statusCode, body: response.body };
+		return { statusCode: response.statusCode || response.status, body: response.body || response.data };
 	} catch (error) {
 		logger.error(`Kubeutils :: Request Handler :: GET :: Error :: ${JSON.stringify(error)}`);
 		return error;
@@ -80,7 +80,7 @@ e.post = async (url, body) => {
 		});
 		logger.debug(`Kubeutils :: Request Handler :: POST :: Response`);
 		logger.debug(response);
-		return { statusCode: response.statusCode, body: response.body };
+		return { statusCode: response.statusCode || response.status, body: response.body || response.data };
 	} catch (error) {
 		logger.error(`Kubeutils :: Request Handler :: POST :: Error :: ${JSON.stringify(error)}`);
 		logger.error(error);
@@ -109,7 +109,7 @@ e.patch = async (url, body) => {
 			data: body
 		});
 		logger.debug(`Kubeutils :: Request Handler :: PATCH :: Response :: ${JSON.stringify(response)}`);
-		return { statusCode: response.statusCode, body: response.body };
+		return { statusCode: response.statusCode || response.status, body: response.body || response.data };
 	} catch (error) {
 		logger.error(`Kubeutils :: Request Handler :: PATCH :: Error :: ${JSON.stringify(error)}`);
 		return error;
@@ -136,7 +136,7 @@ e.put = async (url, body) => {
 			data: body
 		});
 		logger.debug(`Kubeutils :: Request Handler :: PUT :: Response :: ${JSON.stringify(response)}`);
-		return { statusCode: response.statusCode, body: response.body };
+		return { statusCode: response.statusCode || response.status, body: response.body || response.data };
 	} catch (error) {
 		logger.error(`Kubeutils :: Request Handler :: PUT :: Error :: ${JSON.stringify(error)}`);
 		return error;
@@ -163,7 +163,7 @@ e.delete = async (url, body) => {
 			data: body
 		});
 		logger.debug(`Kubeutils :: Request Handler :: DELETE :: Response :: ${JSON.stringify(response)}`);
-		return { statusCode: response.statusCode, body: response.body };
+		return { statusCode: response.statusCode || response.status, body: response.body || response.data };
 	} catch (error) {
 		logger.error(`Kubeutils :: Request Handler :: DELETE :: Error :: ${JSON.stringify(error)}`);
 		return error;
