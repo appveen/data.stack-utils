@@ -228,7 +228,7 @@ e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options, _vol
 			}
 		});
 	}
-	logger.trace(`KubeUtils :: Updating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Request Data :: ${JSON.stringify(_d)}`);
+	logger.trace(`KubeUtils :: Updating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Request Data :: ${JSON.stringify(data)}`);
 	return req.patch(_baseURL + "/namespaces/" + _namespace + "/deployments/" + _name, data)
 		.then(_d => {
 			logger.trace(`KubeUtils :: Updating Deployment :: Deployment Name :: ${_name} :: Namespace :: ${_namespace} :: Response :: ${JSON.stringify(_d)}`);
