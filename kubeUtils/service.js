@@ -117,6 +117,27 @@ e.createService = (_namespace, _name, _port, _release) => {
 }
 
 
+e.updateService = (_namespace, _name, _port) => {
+	var data = {
+  		"spec": {
+    	"ports": [
+      		{
+		    	"protocol": "TCP",
+		        "port": 80,
+		        "targetPort": _port
+      		}
+    	]
+		}
+	};
+	return req.patch(_baseURL + "/namespaces/" + _namespace + "/services/" + _name, data)
+	.then(_d => {
+		return _d;
+	}, _e => {
+		return _e;
+	});
+}
+
+
 e.deleteService = (_namespace, _name) => {
 	logger.debug(`KubeUtils :: Delete Service :: Service Name :: ${_name} :: Namespace :: ${_namespace}`);
 
