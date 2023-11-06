@@ -7,4 +7,6 @@ e.logToQueue = require("./logToQueue");
 e.streaming = require("./streaming");
 e.eventsUtil = require("./eventsUtil");
 e.storageEngine = require("./storageEngine");
+e.database = require("./database");
+
 module.exports = e;
