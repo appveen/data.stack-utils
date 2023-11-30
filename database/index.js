@@ -53,7 +53,8 @@ async function fetchEnvVariables() {
 
         const envVariables = {};
         result.forEach(item => {
-            envVariables[item._id] = item.value;
+            // Check if the variable is already set in process.env
+            envVariables[item._id] = process.env[item._id] || item.value;
         });
 
         return envVariables;
