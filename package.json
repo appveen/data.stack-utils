@@ -21,7 +21,7 @@
     "@azure/storage-blob": "^12.14.0",
     "@google-cloud/storage": "^6.9.1",
     "aws-sdk": "^2.1364.0",
-    "axios": "^1.5.1",
+    "axios": "^1.7.4",
     "got": "^11.8.6",
     "lodash": "^4.17.21",
     "log4js": "^6.7.1",
