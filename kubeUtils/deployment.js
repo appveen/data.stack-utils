@@ -123,6 +123,8 @@ e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options, _rel
 	if (_options.livenessProbe) data.spec.template.spec.containers[0]["livenessProbe"] = _options.livenessProbe;
 	if (_options.readinessProbe) data.spec.template.spec.containers[0]["readinessProbe"] = _options.readinessProbe;
 	if (_options.startupProbe) data.spec.template.spec.containers[0]["startupProbe"] = _options.startupProbe;
+	if (_options.securityContext) data.spec.template.spec.containers[0]['securityContext'] = _options.securityContext;
+
 	if (_volumeMounts) {
 		data.spec.template.spec.containers[0]["volumeMounts"] = [];
 		data.spec.template.spec["volumes"] = [];
@@ -142,6 +144,16 @@ e.createDeployment = (_namespace, _name, _image, _port, _envVars, _options, _rel
 			data.spec.template.spec["volumes"].push(tempVolumeConfig);
 		}
 	}
+
+	if (_options.explicitMount) {
+		if (_options.explicitMount.volumes && _options.explicitMount.volumes.length) {
+			data.spec.template.spec["volumes"].push(..._options.explicitMount.volumes);
+		}
+		if (_options.explicitMount.volumeMounts && _options.explicitMount.volumeMounts.length) {
+			data.spec.template.spec.containers[0]["volumeMounts"].push(..._options.explicitMount.volumeMounts);
+		}
+	}
+	
 	if (_envFrom) {
 		data.spec.template.spec.containers[0].envFrom = [];
 		_envFrom.forEach(item => {
@@ -197,6 +209,8 @@ e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options, _vol
 	if (_options.livenessProbe) data.spec.template.spec.containers[0]["livenessProbe"] = _options.livenessProbe;
 	if (_options.readinessProbe) data.spec.template.spec.containers[0]["readinessProbe"] = _options.readinessProbe;
 	if (_options.startupProbe) data.spec.template.spec.containers[0]["startupProbe"] = _options.startupProbe;
+	if (_options.securityContext) data.spec.template.spec.containers[0]['securityContext'] = _options.securityContext;
+
 	if (_volumeMounts) {
 		data.spec.template.spec.containers[0]["volumeMounts"] = [];
 		data.spec.template.spec["volumes"] = [];
@@ -216,6 +230,16 @@ e.updateDeployment = (_namespace, _name, _image, _port, _envVars, _options, _vol
 			data.spec.template.spec["volumes"].push(tempVolumeConfig);
 		}
 	}
+
+	if (_options.explicitMount) {
+		if (_options.explicitMount.volumes && _options.explicitMount.volumes.length) {
+			data.spec.template.spec["volumes"].push(..._options.explicitMount.volumes);
+		}
+		if (_options.explicitMount.volumeMounts && _options.explicitMount.volumeMounts.length) {
+			data.spec.template.spec.containers[0]["volumeMounts"].push(..._options.explicitMount.volumeMounts);
+		}
+	}
+	
 	if (_envFrom) {
 		data.spec.template.spec.containers[0].envFrom = [];
 		_envFrom.forEach(item => {
