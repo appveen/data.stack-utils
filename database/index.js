@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const log4js = require('log4js');
 
+const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'info';
 log4js.configure({
     appenders: { out: { type: 'stdout', layout: { type: 'basic' } } },
-    categories: { default: { appenders: ['out'], level: 'INFO' } }
+    categories: { default: { appenders: ['out'], level: logLevel.toUpperCase() } }
 });
 
 const version = require('../package.json').version;
@@ -25,7 +26,7 @@ async function fetchEnvVariables() {
         logger.info('Fetching runtime environment variables...');
 
         const dbConnection = mongoose.connection;
-        
+
         if (dbConnection.readyState !== 1) {
             throw new Error('MongoDB connection is not established');
         }
