@@ -1,6 +1,6 @@
 {
   "name": "@appveen/data.stack-utils",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "General utility functions for appveen data.stack/datanimbus.io",
   "main": "index.js",
   "scripts": {
