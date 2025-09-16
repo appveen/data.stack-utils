@@ -95,7 +95,7 @@ e.getAuditPostSaveHook = (collectionName,client,queueName)=>{
             auditData._metadata.lastUpdated = new Date();
             const auditOnlyDiff = process.env.AUDIT_ONLY_DIFF ? (process.env.AUDIT_ONLY_DIFF.toString().toLowerCase() === 'true') : true;
             if (auditOnlyDiff) {
-                getDiff(oldData, newData, auditData.data.old, auditData.data.new, ['user', '_id', '__v']);
+                getDiff(oldData, newData, auditData.data.old, auditData.data.new);
             } else {
                 Object.assign(auditData.data.new, newData);
                 Object.assign(auditData.data.old, oldData);
