@@ -93,7 +93,13 @@ e.getAuditPostSaveHook = (collectionName,client,queueName)=>{
             auditData.data.old = {};
             auditData._metadata.createdAt = new Date();
             auditData._metadata.lastUpdated = new Date();
-            getDiff(oldData, newData, auditData.data.old, auditData.data.new);
+            const logFullAudit = process.env.AUDIT_NO_DIFF;
+            if (logFullAudit && logFullAudit.toString().toLowerCase() === 'true') {
+                Object.assign(auditData.data.new, newData);
+                Object.assign(auditData.data.old, oldData);
+            } else {
+                getDiff(oldData, newData, auditData.data.old, auditData.data.new);
+            }
             if(!_.isEqual(auditData.data.old, auditData.data.new))
                 client.publish(queueName, JSON.stringify(auditData));
         }
