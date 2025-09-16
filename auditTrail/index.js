@@ -99,8 +99,6 @@ e.getAuditPostSaveHook = (collectionName,client,queueName)=>{
             } else {
                 Object.assign(auditData.data.new, newData);
                 Object.assign(auditData.data.old, oldData);
-            } else {
-                getDiff(oldData, newData, auditData.data.old, auditData.data.new);
             }
             if(!_.isEqual(auditData.data.old, auditData.data.new))
                 client.publish(queueName, JSON.stringify(auditData));
