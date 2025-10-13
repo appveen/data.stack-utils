@@ -1,6 +1,6 @@
 let e = {};
 const _ = require('lodash')
-const mongoose = require("mongoose");
+const mongoose = require("@datanimbus/mongoose");
 
 function isValue(a) {
     return a == null || !(typeof a == 'object');
