@@ -68,7 +68,6 @@ async function publishEvent(eventId, source, req, doc, partner) {
         await queue.add(eventId, payload, {
             priority: getJobPriority(eventId) || 1,
             removeOnComplete: true,
-            removeOnFail: false
         });
 
         logger.debug(`${txnId}Event published to queue`);

@@ -51,7 +51,18 @@ let getQueue = (queueName, config = {}) => {
         throw new Error('Queue not initialized. Call init() first.');
     }
     if (!queues[queueName]) {
-        queues[queueName] = new Queue(queueName, { connection, ...config, removeOnFail: 100, removeOnComplete: true });
+        queues[queueName] = new Queue(queueName, {
+            connection, defaultJobOptions: {
+                removeOnComplete: true,
+                removeOnFail: 30,
+                attempts: 3,
+                backoff: {
+                    type: 'exponential',
+                    delay: 2000
+                }
+
+            }, ...config
+        });
     }
     return queues[queueName];
 }
@@ -79,8 +90,11 @@ function registerWorker(queueName, processor, config = {}) {
 
     workerInstance.on('completed', (job) => logger.debug(`Job ${job.id} completed`));
     workerInstance.on('failed', (job, err) => logger.error(`Job ${job.id} failed`, err));
+    workerInstance.on('error', (err) => {
+        logger.error('Worker error -', err);
+    });
     workers.push(workerInstance);
-    logger.info(`Events worker started (${queueName}) concurrency=${concurrency}`);
+    logger.info(`Worker started (${queueName}) concurrency=${concurrency}`);
     return workerInstance;
 }
 
