@@ -1,6 +1,6 @@
 let e = {};
 const _ = require('lodash')
-const mongoose = require("mongoose");
+const mongoose = require("@datanimbus/mongoose");
 
 function isValue(a) {
     return a == null || !(typeof a == 'object');
@@ -46,39 +46,39 @@ function getDiff(a, b, oldData, newData) {
     }
 }
 
-e.getAuditPreSaveHook = (collectionName)=> {
-    return function(next, req){
-        if(req){
+e.getAuditPreSaveHook = (collectionName) => {
+    return function (next, req) {
+        if (req) {
             let data = {};
             data.user = null
             data.txnId = null
-            if (req && req.headers ) {
-							data.txnId = req.headers.TxnId || req.headers.txnId;
-							data.user = req.headers.User || req.headers.user;
-						}
+            if (req && req.headers) {
+                data.txnId = req.headers.TxnId || req.headers.txnId;
+                data.user = req.headers.User || req.headers.user;
+            }
             data.timestamp = new Date();
             data.data = {};
-            if(this._id){
-                mongoose.connection.db.collection(collectionName).findOne({_id: this._id})
-                .then(doc => {
-                    data.data.old = doc ? doc : null;
-                    this._auditData = data;
-                    next();
-                });
-            }else{
+            if (this._id) {
+                mongoose.connection.db.collection(collectionName).findOne({ _id: this._id })
+                    .then(doc => {
+                        data.data.old = doc ? doc : null;
+                        this._auditData = data;
+                        next();
+                    });
+            } else {
                 this._auditData = data;
                 next();
             }
         }
-        else{
+        else {
             next();
         }
     };
 };
 
-e.getAuditPostSaveHook = (collectionName,client,queueName)=>{
-    return function(doc){
-        if(doc._auditData){
+e.getAuditPostSaveHook = (collectionName, client, queueName) => {
+    return function (doc) {
+        if (doc._auditData) {
             let oldData = doc._auditData.data.old;
             let newData = doc.toJSON();
             delete doc._auditData.data;
@@ -100,22 +100,24 @@ e.getAuditPostSaveHook = (collectionName,client,queueName)=>{
                 Object.assign(auditData.data.new, newData);
                 Object.assign(auditData.data.old, oldData);
             }
-            if(!_.isEqual(auditData.data.old, auditData.data.new))
-                client.publish(queueName, JSON.stringify(auditData));
+            if (!_.isEqual(auditData.data.old, auditData.data.new))
+                client.getQueue(queueName).add(queueName, auditData, {
+                    removeOnComplete: true
+                });
         }
     };
 };
 
-e.getAuditPreRemoveHook = ()=>{
-    return function(next, req){
-        if(req){
+e.getAuditPreRemoveHook = () => {
+    return function (next, req) {
+        if (req) {
             let data = {};
             data.user = null
             data.txnId = null
-            if (req && req.headers ) {
-							data.txnId = req.headers.TxnId || req.headers.txnId;
-							data.user = req.headers.User || req.headers.user;
-						}
+            if (req && req.headers) {
+                data.txnId = req.headers.TxnId || req.headers.txnId;
+                data.user = req.headers.User || req.headers.user;
+            }
             data.timestamp = new Date();
             data.data = {};
             data._metadata = {};
@@ -132,11 +134,14 @@ e.getAuditPreRemoveHook = ()=>{
     };
 };
 
-e.getAuditPostRemoveHook = (collectionName,client,queueName)=>{
-    return function(doc){
-        if(doc._auditData){
+e.getAuditPostRemoveHook = (collectionName, client, queueName) => {
+    return function (doc) {
+        if (doc._auditData) {
             doc._auditData.colName = collectionName;
-            client.publish(queueName, JSON.stringify(doc._auditData));}
+            client.getQueue(queueName).add(queueName, doc._auditData, {
+                removeOnComplete: true
+            });
+        }
     };
 };
 

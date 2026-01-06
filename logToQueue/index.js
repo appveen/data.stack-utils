@@ -174,14 +174,16 @@ function logToQueue(name, client, queueName, collectionName, masking, serviceId)
                     delete (body.data.reqBody);
                 }
             }
-            let bodyStr = JSON.stringify(body);
+            let bodyStr = body;
             if (req.originalUrl == '/rbac/validate' || req.originalUrl == '/rbac/usr/hb') {
                 next();
             }
             else {
                 try {
                     if (supportedHTTPMethods.indexOf(req.method) > -1) {
-                        client.publish(queueName, bodyStr);
+                        client.getQueue(queueName).add(queueName, bodyStr, {
+                            removeOnComplete: true
+                        });
                     }
                 } catch (e) {
                     logger.error(`[${req.headers.TxnId}] Publish error : ${e.message}`)

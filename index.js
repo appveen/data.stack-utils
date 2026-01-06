@@ -8,5 +8,6 @@ e.streaming = require("./streaming");
 e.eventsUtil = require("./eventsUtil");
 e.storageEngine = require("./storageEngine");
 e.database = require("./database");
+e.queue = require("./queue");
 
 module.exports = e;
