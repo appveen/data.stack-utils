@@ -13,11 +13,11 @@ log4js.configure({
 });
 
 let version = require('../package.json').version;
-let loggerName = process.env.HOSTNAME ? `[${process.env.DATA_STACK_NAMESPACE}] [${process.env.HOSTNAME}] [data.stack-queue ${version}]` : `[data.stack-queue ${version}]`;
+let loggerName = process.env.HOSTNAME ? `[${process.env.DATA_STACK_NAMESPACE}] [${process.env.HOSTNAME}] [data.stack-bullmq ${version}]` : `[data.stack-bullmq ${version}]`;
 let logger = log4js.getLogger(loggerName);
 
 let init = (config) => {
-    logger.debug(`config: ${JSON.stringify(config)}`);
+    logger.debug(`Redis init config (BullMQ): ${JSON.stringify(config)}`);
 
     connection = new IORedis(config.redisUrl, {
         connectTimeout: config.connectTimeout,
@@ -28,19 +28,23 @@ let init = (config) => {
         // }
     });
     connection.on('error', function (err) {
-        logger.error(err.message);
+        logger.error('Redis error (BullMQ)', err)
     });
 
     connection.on('connect', function () {
-        logger.info('Connected to Redis server');
+        logger.info('Connected to Redis (BullMQ)');
+    });
+
+    connection.on('ready', () => {
+        logger.info('Redis is ready for BullMQ operations');
     });
 
     connection.on('close', function () {
-        logger.info('Connection closed to Redis server');
+        logger.info('Connection closed to Redis server (BullMQ)');
     });
 
     connection.on('reconnecting', function () {
-        logger.info('Reconnecting to Redis server');
+        logger.info('Reconnecting to Redis server (BullMQ)');
     });
 
     return connection;
@@ -48,7 +52,7 @@ let init = (config) => {
 
 let getQueue = (queueName, config = {}) => {
     if (!connection) {
-        throw new Error('Queue not initialized. Call init() first.');
+        throw new Error('BullMQ Redis connection is not initialized. Call init() first.');
     }
     if (!queues[queueName]) {
         queues[queueName] = new Queue(queueName, {
@@ -70,7 +74,7 @@ let getQueue = (queueName, config = {}) => {
 
 function registerWorker(queueName, processor, config = {}) {
     if (!connection) {
-        throw new Error('Queue not initialized. Call init() first.');
+        throw new Error('BullMQ Redis connection is not initialized. Call init() first.');
     }
     const concurrency = parseInt(config.workerConcurrency) || 1;
 
@@ -78,7 +82,11 @@ function registerWorker(queueName, processor, config = {}) {
         queueName,
         async (job) => {
             try {
-                logger.debug(`Processing job ${job.id}`);
+                logger.debug(`Processing job`, {
+                    queue: queueName,
+                    jobId: job.id,
+                    name: job.name
+                });
                 await processor(job.data);
             } catch (err) {
                 logger.error(`Error processing job ${job.id}: ${err.message}`);
@@ -88,7 +96,11 @@ function registerWorker(queueName, processor, config = {}) {
         { connection, concurrency }
     );
 
-    workerInstance.on('completed', (job) => logger.debug(`Job ${job.id} completed`));
+    workerInstance.on('completed', (job) => logger.debug(`Job ${job.id} completed`, {
+        queue: queueName,
+        jobId: job.id,
+        name: job.name
+    }));
     workerInstance.on('failed', (job, err) => logger.error(`Job ${job.id} failed`, err));
     workerInstance.on('error', (err) => {
         logger.error('Worker error -', err);
@@ -104,7 +116,7 @@ async function shutdown() {
     for (const w of workers) {
         await w.close();
     }
-    // Close Redis connection
+
     if (connection) {
         await connection.quit();
     }
