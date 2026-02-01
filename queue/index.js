@@ -19,13 +19,11 @@ let logger = log4js.getLogger(loggerName);
 let init = (config) => {
     logger.debug(`Redis init config (BullMQ): ${JSON.stringify(config)}`);
 
-    connection = new IORedis(config.redisUrl, {
+    connection = new IORedis({
+        host: config.redisHost,
+        port: config.redisPort,
         connectTimeout: config.connectTimeout,
         maxRetriesPerRequest: null
-        // retryStrategy: (times) => {
-        //     const delay = Math.min(times * 50, 2000);
-        //     return delay;
-        // }
     });
     connection.on('error', function (err) {
         logger.error('Redis error (BullMQ)', err)
@@ -51,6 +49,8 @@ let init = (config) => {
 }
 
 let getQueue = (queueName, config = {}) => {
+    const { attempts, ...queueOptions } = config;
+
     if (!connection) {
         throw new Error('BullMQ Redis connection is not initialized. Call init() first.');
     }
@@ -59,13 +59,13 @@ let getQueue = (queueName, config = {}) => {
             connection, defaultJobOptions: {
                 removeOnComplete: true,
                 removeOnFail: 30,
-                attempts: 3,
+                attempts: attempts || 3,
                 backoff: {
                     type: 'exponential',
                     delay: 2000
                 }
 
-            }, ...config
+            }, ...queueOptions
         });
     }
     return queues[queueName];
@@ -73,10 +73,11 @@ let getQueue = (queueName, config = {}) => {
 
 
 function registerWorker(queueName, processor, config = {}) {
+    const { concurrency, ...workerOptions } = config;
     if (!connection) {
         throw new Error('BullMQ Redis connection is not initialized. Call init() first.');
     }
-    const concurrency = parseInt(config.workerConcurrency) || 1;
+    const workerConcurrency = parseInt(concurrency) || 1;
 
     let workerInstance = new Worker(
         queueName,
@@ -93,7 +94,7 @@ function registerWorker(queueName, processor, config = {}) {
                 throw err;
             }
         },
-        { connection, concurrency }
+        { connection, concurrency: workerConcurrency, ...workerOptions }
     );
 
     workerInstance.on('completed', (job) => logger.debug(`Job ${job.id} completed`, {
