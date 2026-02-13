@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/appveen/data.stack-utils#readme",
   "dependencies": {
-    "@azure/storage-blob": "^12.14.0",
+    "@azure/storage-blob": "^12.16.0",
     "@google-cloud/storage": "^6.9.1",
     "aws-sdk": "^2.1364.0",
     "axios": "^1.9.0",
