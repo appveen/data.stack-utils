@@ -59,7 +59,7 @@ let getQueue = (queueName, config = {}) => {
             connection, defaultJobOptions: {
                 removeOnComplete: true,
                 removeOnFail: 30,
-                attempts: attempts || 3,
+                attempts: attempts || parseInt(process.env.BULLMQ_JOB_ATTEMPTS) || 3,
                 backoff: {
                     type: 'exponential',
                     delay: 2000
@@ -77,7 +77,7 @@ function registerWorker(queueName, processor, config = {}) {
     if (!connection) {
         throw new Error('BullMQ Redis connection is not initialized. Call init() first.');
     }
-    const workerConcurrency = parseInt(concurrency) || 1;
+    const workerConcurrency = parseInt(concurrency) || parseInt(process.env.BULLMQ_WORKER_CONCURRENCY) || 1;
 
     let workerInstance = new Worker(
         queueName,
