@@ -107,7 +107,7 @@ function registerWorker(queueName, processor, config = {}) {
         logger.error('Worker error -', err);
     });
     workers.push(workerInstance);
-    logger.info(`Worker started (${queueName}) concurrency=${concurrency}`);
+    logger.trace(`Worker started (${queueName}) concurrency=${workerConcurrency}`);
     return workerInstance;
 }
 
