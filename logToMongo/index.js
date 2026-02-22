@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('@datanimbus/mongoose');
 const pathNotToLog = ["/audit", "/audit/count", "/webHookStatus", "/webHookStatus/count", "/logs", "/logs/count", "/health"];
 function logToMongo(name) {
     return function (req, res, next) {

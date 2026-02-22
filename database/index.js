@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('@datanimbus/mongoose');
 const log4js = require('log4js');
 
 const logLevel = process.env.LOG_LEVEL ? process.env.LOG_LEVEL : 'info';
