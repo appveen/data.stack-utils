@@ -27,7 +27,6 @@
     "got": "^11.8.6",
     "ioredis": "^5.9.0",
     "lodash": "^4.17.21",
-    "log4js": "^6.7.1",
-    "node-nats-streaming": "^0.3.2"
+    "log4js": "^6.7.1"
   }
 }
