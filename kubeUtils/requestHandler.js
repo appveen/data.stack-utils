@@ -24,7 +24,9 @@ let dataStack_sa_path = "/var/run/secrets/kubernetes.io/serviceaccount/token";
 function getHeaders(){
 	if (fs.existsSync(dataStack_sa_path)){
 		dataStack_token = fs.readFileSync(dataStack_sa_path);
-	} 
+	}else{
+		throw new Error('KubeUtils :: Token file not found')
+	}
 	return {
 		"Authorization": "Bearer " + dataStack_token
 	};
