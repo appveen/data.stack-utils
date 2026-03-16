@@ -21,66 +21,14 @@ const URL = "https://kubernetes.default.svc";
 var dataStack_token = "";
 let dataStack_sa_path = "/var/run/secrets/kubernetes.io/serviceaccount/token";
 
-const TOKEN_REFRESH_BUFFER_SECONDS = 300;
-let tokenRefreshTimer = null;
-
-// if (fs.existsSync(dataStack_sa_path)) dataStack_token = fs.readFileSync(dataStack_sa_path);
-
-const headers = {
-	"Authorization": "Bearer " + dataStack_token
-};
-
-function decodeTokenExpiry(token) {
-    try {
-        const payload = token.split('.')[1];
-        const decoded = JSON.parse(Buffer.from(payload, 'base64').toString('utf8'));
-        return decoded.exp || 0;
-    } catch (err) {
-        logger.error('KubeUtils :: Failed to decode token expiry', err.message);
-        return 0;
-    }
+function getHeaders(){
+	if (fs.existsSync(dataStack_sa_path)){
+		dataStack_token = fs.readFileSync(dataStack_sa_path);
+	} 
+	return {
+		"Authorization": "Bearer " + dataStack_token
+	};
 }
-
-function loadToken() {
-    try {
-        if (!fs.existsSync(dataStack_sa_path)) {
-            logger.error('KubeUtils :: Token file not found');
-            return;
-        }
-
-        const newToken = fs.readFileSync(dataStack_sa_path, 'utf8').trim();
-        if (newToken === dataStack_token) {
-            logger.trace('KubeUtils :: Token unchanged, skipping refresh');
-            return;
-        }
-
-        dataStack_token = newToken;
-        headers['Authorization'] = 'Bearer ' + dataStack_token;
-
-        const exp = decodeTokenExpiry(dataStack_token);
-        if (exp) {
-            const now = Math.floor(Date.now() / 1000);
-            const refreshInSeconds = Math.max(exp - now - TOKEN_REFRESH_BUFFER_SECONDS, 60);
-
-            logger.info(`KubeUtils :: Token loaded :: Expires at ${new Date(exp * 1000).toISOString()} :: Refresh in ${refreshInSeconds}s`);
-
-            if (tokenRefreshTimer) clearTimeout(tokenRefreshTimer);
-            tokenRefreshTimer = setTimeout(loadToken, refreshInSeconds * 1000);
-        } else {
-            logger.warn('KubeUtils :: Could not determine token expiry, will refresh in 1 hour');
-            if (tokenRefreshTimer) clearTimeout(tokenRefreshTimer);
-            tokenRefreshTimer = setTimeout(loadToken, 3600 * 1000);
-        }
-    } catch (err) {
-        logger.error('KubeUtils :: Error loading token', err.message);
-        // Retry in 60 seconds on failure
-        if (tokenRefreshTimer) clearTimeout(tokenRefreshTimer);
-        tokenRefreshTimer = setTimeout(loadToken, 60 * 1000);
-    }
-}
-
-// Initial load
-loadToken();
 
 const agent = new https.Agent({
 	rejectUnauthorized: false,
@@ -98,7 +46,7 @@ e.get = async (url) => {
 		let response = await axios({
 			url: api,
 			method: 'GET',
-			headers: headers,
+			headers: getHeaders(),
 			httpsAgent: agent
 		});
 
@@ -123,7 +71,7 @@ e.post = async (url, body) => {
 		let response = await axios({
 			url: api,
 			method: 'POST',
-			headers: headers,
+			headers: getHeaders(),
 			httpsAgent: agent,
 			data: body
 		});
@@ -151,7 +99,7 @@ e.patch = async (url, body) => {
 			method: 'PATCH',
 			httpsAgent: agent,
 			headers: {
-				...headers,
+				...getHeaders(),
 				"Content-Type": "application/merge-patch+json"
 			},
 			data: body
@@ -178,7 +126,7 @@ e.put = async (url, body) => {
 		let response = await axios({
 			url: api,
 			method: 'PUT',
-			headers: headers,
+			headers: getHeaders(),
 			httpsAgent: agent,
 			data: body
 		});
@@ -204,7 +152,7 @@ e.delete = async (url, body) => {
 		let response = await axios({
 			url: api,
 			method: 'DELETE',
-			headers: headers,
+			headers: getHeaders(),
 			httpsAgent: agent,
 			data: body
 		});
