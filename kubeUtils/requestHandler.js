@@ -21,10 +21,10 @@ const URL = "https://kubernetes.default.svc";
 var dataStack_token = "";
 let dataStack_sa_path = "/var/run/secrets/kubernetes.io/serviceaccount/token";
 
-function getHeaders(){
-	if (fs.existsSync(dataStack_sa_path)){
+function getHeaders() {
+	if (fs.existsSync(dataStack_sa_path)) {
 		dataStack_token = fs.readFileSync(dataStack_sa_path);
-	}else{
+	} else {
 		throw new Error('KubeUtils :: Token file not found')
 	}
 	return {
