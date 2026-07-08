@@ -140,4 +140,40 @@ e.getAuditPostRemoveHook = (collectionName,client,queueName)=>{
     };
 };
 
+e.getAuditPreDeleteOneHook = () => {
+    return function(next) {
+        const req = this._req;
+        if (req) {
+            let data = {};
+            data.user = null;
+            data.txnId = null;
+            if (req && req.headers) {
+                data.txnId = req.headers.TxnId || req.headers.txnId;
+                data.user = req.headers.User || req.headers.user;
+            }
+            data.timestamp = new Date();
+            data.data = {};
+            data._metadata = {};
+            data._metadata.createdAt = new Date();
+            data._metadata.lastUpdated = new Date();
+            data.data.new = null;
+            data.data.old = this.toJSON();
+            data.data._id = this._id;
+            data.data.app = this.app;
+            data._metadata.deleted = false;
+            this._auditData = data;
+        }
+        next();
+    };
+};
+
+e.getAuditPostDeleteOneHook = (collectionName, client, queueName) => {
+    return function(doc) {
+        if (doc._auditData) {
+            doc._auditData.colName = collectionName;
+            client.publish(queueName, JSON.stringify(doc._auditData));
+        }
+    };
+};
+
 module.exports = e;
