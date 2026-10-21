@@ -16,16 +16,6 @@ let loggerName = process.env.HOSTNAME ? `[${process.env.DATA_STACK_NAMESPACE}] [
 let logger = log4js.getLogger(loggerName);
 
 const EVENTS_QUEUE = 'events';
-const priorityValues = {
-    "High": 1,
-    "Medium": 5,
-    "Low": 10
-};
-
-function getJobPriority(eventId) {
-    const priorityString = eventPriorityMap[eventId] || "High"; // default
-    return priorityValues[priorityString];
-}
 /**
  * 
  * @param {string} eventId The Event ID to Identify an Event
@@ -38,8 +28,8 @@ async function publishEvent(eventId, source, req, doc, partner) {
     let txnId = "";
     let user = "";
     if (req && req.headers) {
-        txnId = [req.headers.TxnId || req.headers.txnId];
-        user = [req.headers.User || req.headers.user];
+        txnId = `[${req.headers.TxnId || req.headers.txnId || req.headers.txnid}]`;
+        user = `[${req.headers.User || req.headers.user}]`;
     }
     try {
         let payload = {
@@ -65,8 +55,8 @@ async function publishEvent(eventId, source, req, doc, partner) {
         }
 
         const queue = getQueue(EVENTS_QUEUE);
+        // No BullMQ job priority: events are delivered in publish order (as on NATS); priority stays in the payload
         await queue.add(eventId, payload, {
-            priority: getJobPriority(eventId) || 1,
             removeOnComplete: true,
         });
 

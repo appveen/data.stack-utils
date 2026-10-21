@@ -17,6 +17,7 @@ let eventPriorityMap = {
     "EVENT_PARTNER_REMOVED_FLOW": "High",
     "EVENT_PARTNER_DELETE": "High",
     "EVENT_AGENT_APP_CREATE": "Medium",
+    "EVENT_AGENT_APP_START": "Medium",
     "EVENT_AGENT_APP_UPDATE_PASSWORD": "High",
     "EVENT_AGENT_APP_UPDATE_SETTINGS": "Medium",
     "EVENT_AGENT_APP_UPDATE_SCHEDULE": "High",

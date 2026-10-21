@@ -20,12 +20,17 @@ const URL = "https://kubernetes.default.svc";
 
 var dataStack_token = "";
 let dataStack_sa_path = "/var/run/secrets/kubernetes.io/serviceaccount/token";
-if (fs.existsSync(dataStack_sa_path)) dataStack_token = fs.readFileSync(dataStack_sa_path);
 
-const headers = {
-	"Authorization": "Bearer " + dataStack_token
-};
-
+function getHeaders() {
+	if (fs.existsSync(dataStack_sa_path)) {
+		dataStack_token = fs.readFileSync(dataStack_sa_path);
+	} else {
+		throw new Error('KubeUtils :: Token file not found')
+	}
+	return {
+		"Authorization": "Bearer " + dataStack_token
+	};
+}
 
 const agent = new https.Agent({
 	rejectUnauthorized: false,
@@ -43,7 +48,7 @@ e.get = async (url) => {
 		let response = await axios({
 			url: api,
 			method: 'GET',
-			headers: headers,
+			headers: getHeaders(),
 			httpsAgent: agent
 		});
 
@@ -68,7 +73,7 @@ e.post = async (url, body) => {
 		let response = await axios({
 			url: api,
 			method: 'POST',
-			headers: headers,
+			headers: getHeaders(),
 			httpsAgent: agent,
 			data: body
 		});
@@ -96,7 +101,7 @@ e.patch = async (url, body) => {
 			method: 'PATCH',
 			httpsAgent: agent,
 			headers: {
-				"Authorization": "Bearer " + dataStack_token,
+				...getHeaders(),
 				"Content-Type": "application/merge-patch+json"
 			},
 			data: body
@@ -123,7 +128,7 @@ e.put = async (url, body) => {
 		let response = await axios({
 			url: api,
 			method: 'PUT',
-			headers: headers,
+			headers: getHeaders(),
 			httpsAgent: agent,
 			data: body
 		});
@@ -149,7 +154,7 @@ e.delete = async (url, body) => {
 		let response = await axios({
 			url: api,
 			method: 'DELETE',
-			headers: headers,
+			headers: getHeaders(),
 			httpsAgent: agent,
 			data: body
 		});
