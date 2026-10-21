@@ -1,6 +1,11 @@
 let e = {};
 const _ = require('lodash')
 const mongoose = require("@datanimbus/mongoose");
+let log4js = require('log4js');
+
+let version = require('../package.json').version;
+let loggerName = process.env.HOSTNAME ? `[${process.env.DATA_STACK_NAMESPACE}] [${process.env.HOSTNAME}] [data.stack-auditTrail ${version}]` : `[data.stack-auditTrail ${version}]`;
+let logger = log4js.getLogger(loggerName);
 
 function isValue(a) {
     return a == null || !(typeof a == 'object');
@@ -12,6 +17,24 @@ function isArray(a) {
 
 function isEqual(a, b) {
     return (_.isEqual(a, b));
+}
+
+// user/txnId for the audit record. The hook gets either an options object ({ headers }), or the Express req
+// cloned by mongoose into SaveOptions/RemoveOptions (its headers getter is lost, rawHeaders survive), or
+// nothing useful, in which case doc._req set by the caller is used. Node lowercases header names (txnid).
+function getAuditHeaders(req, doc) {
+    let headers = (req && req.headers) || (doc && doc._req && doc._req.headers);
+    if (!headers && req && Array.isArray(req.rawHeaders)) {
+        headers = {};
+        for (let i = 0; i + 1 < req.rawHeaders.length; i += 2) {
+            headers[req.rawHeaders[i].toLowerCase()] = req.rawHeaders[i + 1];
+        }
+    }
+    headers = headers || {};
+    return {
+        user: headers.User || headers.user || null,
+        txnId: headers.TxnId || headers.txnId || headers.txnid || null
+    };
 }
 
 function getDiff(a, b, oldData, newData) {
@@ -50,12 +73,9 @@ e.getAuditPreSaveHook = (collectionName) => {
     return function (next, req) {
         if (req) {
             let data = {};
-            data.user = null
-            data.txnId = null
-            if (req && req.headers) {
-                data.txnId = req.headers.TxnId || req.headers.txnId;
-                data.user = req.headers.User || req.headers.user;
-            }
+            const auditHeaders = getAuditHeaders(req, this);
+            data.user = auditHeaders.user;
+            data.txnId = auditHeaders.txnId;
             data.timestamp = new Date();
             data.data = {};
             if (this._id) {
@@ -103,7 +123,7 @@ e.getAuditPostSaveHook = (collectionName, client, queueName) => {
             if (!_.isEqual(auditData.data.old, auditData.data.new))
                 client.getQueue(queueName).add(queueName, auditData, {
                     removeOnComplete: true
-                });
+                }).catch(err => logger.error(`[${auditData.txnId}] Audit enqueue failed (${collectionName}): ${err.message}`));
         }
     };
 };
@@ -112,12 +132,9 @@ e.getAuditPreRemoveHook = () => {
     return function (next, req) {
         if (req) {
             let data = {};
-            data.user = null
-            data.txnId = null
-            if (req && req.headers) {
-                data.txnId = req.headers.TxnId || req.headers.txnId;
-                data.user = req.headers.User || req.headers.user;
-            }
+            const auditHeaders = getAuditHeaders(req, this);
+            data.user = auditHeaders.user;
+            data.txnId = auditHeaders.txnId;
             data.timestamp = new Date();
             data.data = {};
             data._metadata = {};
@@ -140,7 +157,7 @@ e.getAuditPostRemoveHook = (collectionName, client, queueName) => {
             doc._auditData.colName = collectionName;
             client.getQueue(queueName).add(queueName, doc._auditData, {
                 removeOnComplete: true
-            });
+            }).catch(err => logger.error(`[${doc._auditData.txnId}] Audit enqueue failed (${collectionName}): ${err.message}`));
         }
     };
 };

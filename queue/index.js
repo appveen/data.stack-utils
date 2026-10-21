@@ -124,13 +124,13 @@ async function shutdown() {
     logger.info('BullMQ shutdown complete');
 }
 
-process.once('SIGINT', shutdown);
-process.once('SIGTERM', shutdown);
-
+// No signal handlers here: each service calls shutdown() at the end of its own SIGTERM drain,
+// so requests still in flight can enqueue their logs/audits before the connection is closed.
 module.exports = {
     init: init,
     getQueue: getQueue,
     registerWorker: registerWorker,
+    shutdown: shutdown,
     Queue: Queue,
     Worker: Worker
 };

@@ -183,7 +183,7 @@ function logToQueue(name, client, queueName, collectionName, masking, serviceId)
                     if (supportedHTTPMethods.indexOf(req.method) > -1) {
                         client.getQueue(queueName).add(queueName, bodyStr, {
                             removeOnComplete: true
-                        });
+                        }).catch(err => logger.error(`[${req.headers.TxnId}] Publish error : ${err.message}`));
                     }
                 } catch (e) {
                     logger.error(`[${req.headers.TxnId}] Publish error : ${e.message}`)
